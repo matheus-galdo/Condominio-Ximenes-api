@@ -23,7 +23,7 @@ class JWTProtectedRoute extends BaseMiddleware
         try {
             $user = auth()->userOrFail();
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
-            return response()->json(['status' => 'Authorization token not found']);
+            return response()->json(['status' => 'Authorization token not found'], 401);
         }
 
         return $next($request);

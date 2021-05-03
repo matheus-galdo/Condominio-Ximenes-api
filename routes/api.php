@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\LocatarioController;
+use App\Http\Controllers\OcorrenciaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,5 +32,8 @@ Route::post('logout', [AuthController::class, 'logout']);
 Route::group(['middleware' => ['apiJwt']], function() {
 
     Route::get('users', function () { return auth()->user(); });
+
+    Route::apiResource('locatario', LocatarioController::class);
+    Route::apiResource('ocorrencia', OcorrenciaController::class);
 
 });

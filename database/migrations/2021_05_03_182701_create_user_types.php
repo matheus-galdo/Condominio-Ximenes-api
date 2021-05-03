@@ -4,9 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlteringUsersTable extends Migration
+class CreateUserTypes extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -14,8 +13,9 @@ class AlteringUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table){
-            $table->tinyInteger('type')->after('name');
+        Schema::create('user_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('type', 50);
         });
     }
 
@@ -26,6 +26,6 @@ class AlteringUsersTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('user_types');
     }
 }

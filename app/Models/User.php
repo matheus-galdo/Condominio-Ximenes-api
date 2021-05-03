@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var bool
      */
-    public $timestamps = false;
+    public $timestamps = true;
 
 
     /**
@@ -73,5 +73,25 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function typeName()
+    {
+        return $this->hasOne(UserType::class);
+    }
+
+    public function locatarios()
+    {
+        return $this->hasMany(Locatario::class);
+    }
+
+    public function ocorrencias()
+    {
+        return $this->hasMany(Ocorrencia::class);
+    }
+
+    public function proprietario()
+    {
+        return $this->hasMany(Proprietario::class);
     }
 }

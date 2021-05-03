@@ -43,5 +43,9 @@ class DatabaseSeeder extends Seeder
             'password' => password_hash('ablue', PASSWORD_BCRYPT)
         ]);
 
+        $this->call([
+            UserTypesSeeder::class
+        ]);
+
     }
 }
