@@ -22,12 +22,10 @@ class CreateChatSindica extends Migration
         });
 
         Schema::create('chat_sindica_mensagens', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('autor_mensagem');
-            $table->foreign('autor_mensagem')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade')->default(0);
-            $table->unsignedBigInteger('destinatario_mensagem');
-            $table->foreign('destinatario_mensagem')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade')->default(0);
-            $table->foreignId('chat_sindica_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->id();            
+            $table->foreignId('autor_mensagem')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->foreignId('destinatario_mensagem')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->foreignId('chat_sindica_id')->constrained('chat_sindica')->onUpdate('cascade')->onDelete('cascade')->default(0);
             $table->text('mensagem');
             $table->text('anexo')->nullable();
             $table->timestamps();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ocorrencia;
+use App\Models\OcorrenciaFollowup;
 use Illuminate\Http\Request;
 
 class OcorrenciaController extends Controller
@@ -26,18 +27,25 @@ class OcorrenciaController extends Controller
     public function store(Request $request)
     {
         try {
-            Ocorrencia::create([
+            $ocorrencia = Ocorrencia::create([
                 'assunto' => $request->assunto,
                 'descricao' => $request->descricao,
                 'user_id' => auth()->user()->id,
             ]);
 
-            response('ok', 200);
+            OcorrenciaFollowup::create([
+                'descricao' => 'Ocorrência criada',
+                'evento_followup_id' => 1,
+                'ocorrencia_id' => $ocorrencia->id
+            ]);
+
+
+
+            return response(true, 200);
 
         } catch (\Throwable $th) {
-            //throw $th;
-
-            response('fail', 400);
+            throw $th;
+            return response(['error'=> $th], 400);
         }
     }
 
@@ -49,7 +57,7 @@ class OcorrenciaController extends Controller
      */
     public function show($id)
     {
-        Ocorrencia::find($id);
+        return Ocorrencia::with(['followup'])->find($id);
     }
 
     /**

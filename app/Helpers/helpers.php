@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Sistema\UserType;
 
 if (! function_exists('isAuthorized')) {    
     /**
@@ -10,27 +11,21 @@ if (! function_exists('isAuthorized')) {
      */
     function isAuthorized($authorizedTypes) {
         
-        //vem do DB
-        $typesOfuser = [
-            'admin'  => 1, 
-            'sindico'  => 2, 
-            'porteiro'  => 3, 
-            'morador'  => 4 
-        ];
-
+        $typesOfuser = UserType::all();
         if ($authorizedTypes == 'all') return true;
 
         $userType = auth()->user()->type;
-        
+
         if(is_array($authorizedTypes)){
             $isAuthorized = false;
+
             foreach ($authorizedTypes as $type) {
-                if($userType == $typesOfuser[$type]) $isAuthorized = true;
+                if($userType == $typesOfuser->firstWhere('nome', $type)->id) $isAuthorized = true;
             }
             return $isAuthorized;
         }
 
-        return($userType == $typesOfuser[$authorizedTypes]);
+        return($userType == $typesOfuser->firstWhere('nome', $authorizedTypes)->id);
     }
 }
 

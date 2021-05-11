@@ -15,7 +15,9 @@ class CreateUserTypes extends Migration
     {
         Schema::create('user_types', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 50);
+            $table->string('nome', 50);
+            $table->boolean('is_admin')->default(false);
+            $table->softDeletes();
         });
     }
 

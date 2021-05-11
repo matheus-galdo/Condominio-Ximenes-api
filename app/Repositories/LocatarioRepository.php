@@ -3,18 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Locatario;
-use App\Models\LocatarioConvidado;
-use App\Models\LocatarioVeiculo;
 
-class LocatarioRepository{
+class LocatarioRepository
+{
 
     public static function createLocatario($request)
     {
 
         try {
-            $hasVeiculos =(count($request->veiculos) > 0);
+            $hasVeiculos = (count($request->veiculos) > 0);
             $hasConvidados = (count($request->convidados) > 0);
-            
+
             $locatario = Locatario::create([
                 'nome' => $request->nomeLocatario,
                 'cpf' => clearCpf($request->cpf),
@@ -23,7 +22,7 @@ class LocatarioRepository{
                 'celular' => $request->celular,
                 'email' => $request->email,
                 'observacoes' => $request->observacoes,
-                'possui_veiculos' => $hasVeiculos, 
+                'possui_veiculos' => $hasVeiculos,
                 'possui_convidados' => $hasConvidados,
                 'user_id' => auth()->user()->id
             ]);
@@ -37,11 +36,57 @@ class LocatarioRepository{
                 LocatarioConvidadoRepository::create($convidado, $locatario);
             }
 
-            return true;
+            return 'ok';
         } catch (\Throwable $th) {
 
             return ['error' => $th];
         }
-        
+    }
+
+    public static function updateLocatario($request, $id)
+    {
+        try {
+
+            $locatario = Locatario::with(['convidados', 'veiculos'])
+                ->where('user_id', auth()->user()->id)
+                ->findOrFail($id);
+
+            LocatarioVeiculoRepository::update($request, $locatario);
+            LocatarioConvidadoRepository::update($request, $locatario);
+
+            $hasVeiculos = (count($request->veiculos) > 0);
+            $hasConvidados = (count($request->convidados) > 0);
+
+            $locatario->nome = $request->nomeLocatario;
+            $locatario->cpf = clearCpf($request->cpf);
+            $locatario->data_chegada = $request->dataChegada;
+            $locatario->data_saida = $request->dataSaida;
+            $locatario->celular = $request->celular;
+            $locatario->email = $request->email;
+            $locatario->observacoes = $request->observacoes;
+            $locatario->possui_veiculos = $hasVeiculos;
+            $locatario->possui_convidados = $hasConvidados;
+
+            $locatario->save();
+
+
+            return 'ok';
+        } catch (\Throwable $th) {
+            throw $th;
+            return ['error' => $th];
+        }
+    }
+
+
+    public static function destroyLocatario($request, $id)
+    {
+        try {
+            $user = auth()->user();
+            Locatario::where('user_id', $user->id)->findOrFail($id)->delete();
+            return 'ok';
+        } catch (\Throwable $th) {
+            throw $th;
+            return ['error' => $th];
+        }
     }
 }

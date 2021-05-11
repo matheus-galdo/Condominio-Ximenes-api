@@ -14,7 +14,7 @@ class ProprietariosController extends Controller
      */
     public function index()
     {
-        //
+        Proprietario::all();
     }
 
     /**

@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Aviso;
-use App\Repositories\AvisoRepository;
-use Carbon\Carbon;
+use App\Models\Sistema\Modulo;
+use App\Models\Sistema\Modulos;
 use Illuminate\Http\Request;
 
-class AvisosController extends Controller
+class ModulosController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        return Aviso::orWhere('data_expiracao', '>=', Carbon::now())->orWhereNull('data_expiracao')->get();
+        return response()->json(Modulos::where('nome', '!=', 'modulos')->get());
     }
 
     /**
@@ -27,40 +26,40 @@ class AvisosController extends Controller
      */
     public function store(Request $request)
     {
-        return AvisoRepository::create($request);
+        return response('', 204);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Aviso  $aviso
+     * @param  \App\Models\Sistema\Modulo  $modulo
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Aviso $aviso)
+    public function show(Modulos $modulo)
     {
-        return $aviso;
+        return response()->json($modulo);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Aviso  $aviso
+     * @param  \App\Models\Sistema\Modulo  $modulo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Aviso $aviso)
+    public function update(Request $request, Modulos $modulo)
     {
-        //
+        return response('', 204);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Aviso  $aviso
+     * @param  \App\Models\Sistema\Modulo  $modulo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Aviso $aviso)
+    public function destroy(Modulos $modulo)
     {
-        return $aviso->delete();
+        return response('', 204);
     }
 }

@@ -20,6 +20,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'type' => $this->type,
+            'typeName' => $this->typeName->nome,
+            'permissoes' => PermissoesWithModulosResource::collection($this->typeName->permissoesWithModulo),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

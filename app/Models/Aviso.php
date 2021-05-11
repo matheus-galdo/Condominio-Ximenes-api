@@ -12,7 +12,8 @@ class Aviso extends Model
     public $fillable = [
         'titulo',
         'descricao',
-        'user_id'
+        'user_id',
+        'data_expiracao'
     ];
-    
+
 }

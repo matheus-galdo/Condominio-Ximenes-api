@@ -15,8 +15,10 @@ class CreateApartamentos extends Migration
     {
         Schema::create('apartamentos', function (Blueprint $table) {
             $table->id();
+            $table->string('bloco');
             $table->string('numero');
             $table->string('andar');
+            $table->softDeletes();
         });
     }
 

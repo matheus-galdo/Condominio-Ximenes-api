@@ -12,6 +12,7 @@ class Ocorrencia extends Model
     protected $fillable = [
         'assunto',
         'descricao',
+        'concluida',
         'user_id'
     ];
 
@@ -19,5 +20,10 @@ class Ocorrencia extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function followup()
+    {
+        return $this->hasMany(OcorrenciaFollowup::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Locatario\CreateLocatarioRequest;
+use App\Http\Requests\CreateLocatarioRequest;
 use App\Models\Locatario;
 use App\Models\LocatarioConvidado;
 use App\Models\LocatarioVeiculo;
@@ -32,12 +32,8 @@ class LocatarioController extends Controller
      */
     public function store(CreateLocatarioRequest $request)
     {
-
-        LocatarioRepository::createLocatario($request);
-
-        return 'foi';
-
-        // return response(json_encode($t), 200);
+        $created = LocatarioRepository::createLocatario($request);
+        return response($created, ($created == 'ok')? 201 : 400);
     }
 
     /**
@@ -58,9 +54,10 @@ class LocatarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreateLocatarioRequest $request, $id)
     {
-        //
+        $updated = LocatarioRepository::updateLocatario($request, $id);
+        return response($updated, (!isset($updated['error']))? 200 : 400);
     }
 
     /**
@@ -69,18 +66,10 @@ class LocatarioController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        try {
-            $user = auth()->user();
-            $userType = '';
-            if ($user->type !== 4) {
-                $locatario = Locatario::where('user_id', $user->id)->where('id', $id)->firstOrFail();
-
-                return response()->json($locatario);
-            }
-        } catch (\Throwable $th) {
-            return ['error' => $th];
-        }
+        $deleted = LocatarioRepository::destroyLocatario($request, $id);
+        return response($deleted, (!isset($deleted['error']))? 200 : 400);
+        
     }
 }

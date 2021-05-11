@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
+        'type',
         'email',
         'password',
     ];
@@ -77,7 +78,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function typeName()
     {
-        return $this->hasOne(UserType::class);
+        return $this->belongsTo(Sistema\UserType::class, 'type');
     }
 
     public function locatarios()

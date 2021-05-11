@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Locatario;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -33,18 +33,22 @@ class CreateLocatarioRequest extends FormRequest
             'email' => 'required|email:rfc,dns',
             'observacoes' => 'string|present|nullable',
 
+            /*-----veiculos-----*/
             'veiculos' => 'present|array',
+
+            'veiculos.*.placa' => 'string',
+            'veiculos.*.modelo' => 'required',
+            'veiculos.*.cor' => 'required',
+
+            
+            /*-----convidados-----*/
             'convidados' => 'present|array',
 
-            'veiculos.placa' => 'string|required_if:veiculos,min:1',
-            // 'veiculos.modelo' => 'required',
-            // 'veiculos.cor' => 'required',
-
-            // 'convidados.nome' => 'required',
-            // 'convidados.cpf' => 'required',
-            // 'convidados.celular' => 'required',
-            // 'convidados.email' => 'required',
-            // 'convidados.observacoes' => 'required'
+            'convidados.*.nome' => 'required',
+            'convidados.*.cpf' => 'required',
+            'convidados.*.celular' => 'required',
+            'convidados.*.email' => 'required',
+            'convidados.*.observacoes' => 'required'
         ];
     }
 
