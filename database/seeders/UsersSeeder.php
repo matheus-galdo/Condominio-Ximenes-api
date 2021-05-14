@@ -14,32 +14,20 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
-            'name' => 'Admin',
-            'type' => 1,
-            'email' => 'admin',
-            'password' => password_hash('admin', PASSWORD_BCRYPT)
-        ]);
+        $usersSeeds = [
+            ['name' => 'Admin', 'type' => 1, 'email' => 'admin'],
+            ['name' => 'Teste', 'type' => 1, 'email' => 'teste'],
+            ['name' => 'Galdino', 'type' => 4, 'email' => 'galdo'],
+            ['name' => 'ablue', 'type' => 2, 'email' => 'ablue'],
+        ];
 
-        User::create([
-            'name' => 'teste',
-            'type' => 1,
-            'email' => 'teste',
-            'password' => password_hash('teste', PASSWORD_BCRYPT)
-        ]);
-
-        User::create([
-            'name' => 'galdo',
-            'type' => 4,
-            'email' => 'galdo',
-            'password' => password_hash('galdo', PASSWORD_BCRYPT)
-        ]);
-
-        User::create([
-            'name' => 'ablue',
-            'type' => 1,
-            'email' => 'ablue',
-            'password' => password_hash('ablue', PASSWORD_BCRYPT)
-        ]);
+        foreach ($usersSeeds as $key => $value) {
+            User::create([
+                'name' => $value['name'],
+                'type' => $value['type'],
+                'email' => $value['email'],
+                'password' => password_hash($value['email'], PASSWORD_BCRYPT)
+            ]);
+        }
     }
 }

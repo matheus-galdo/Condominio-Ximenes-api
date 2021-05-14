@@ -18,6 +18,7 @@ class CreatePermissoesSistema extends Migration
             $table->string('nome');
             $table->string('label');
             $table->string('descricao');
+            $table->boolean('interno');
         });
 
         Schema::create('permissoes', function (Blueprint $table) {

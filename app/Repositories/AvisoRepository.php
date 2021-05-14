@@ -20,7 +20,7 @@ class AvisoRepository{
 
             return true;
         } catch (\Throwable $th) {
-            return ['error' => $th];
+            return exceptionApi($th, 400);
         }
     }
 }

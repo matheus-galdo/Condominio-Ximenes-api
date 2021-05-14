@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ApartamentoRequest;
+use App\Http\Requests\Apartamentos\CreateApartamentoRequest;
+use App\Http\Requests\Apartamentos\UpdateApartamentoRequest;
+use App\Http\Resources\Apartamentos\ApartamentoProprietarioResource;
 use App\Models\Apartamento;
 use App\Repositories\ApartamentoRepository;
+use Illuminate\Http\Request;
 
 class ApartamentoController extends Controller
 {
@@ -13,9 +16,12 @@ class ApartamentoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(Apartamento::with(['proprietarios'])->withTrashed()->get());
+        $apartamentosBuilder = Apartamento::withTrashed();
+        if(isset($request->proprietarios) && $request->proprietarios) $apartamentosBuilder->with(['proprietarios.user']);
+        
+        return response($apartamentosBuilder->orderBy('deleted_at')->orderBy('numero')->get());
     }
 
     /**
@@ -24,7 +30,7 @@ class ApartamentoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ApartamentoRequest $request)
+    public function store(CreateApartamentoRequest $request)
     {
         $response = ApartamentoRepository::create($request);
         return response($response, $response['code']);
@@ -38,8 +44,9 @@ class ApartamentoController extends Controller
      */
     public function show($apartamentoId)
     {   
-        $response = ApartamentoRepository::show($apartamentoId);
-        return response($response, $response['code']);
+        $apartamento = Apartamento::withTrashed()->with(['proprietarios.user.typeName'])->findOrFail($apartamentoId);
+        $apartamento = new ApartamentoProprietarioResource($apartamento);
+        return response($apartamento, 200);
     }
 
     /**
@@ -49,9 +56,9 @@ class ApartamentoController extends Controller
      * @param  \App\Models\Apartamento  $apartamento
      * @return \Illuminate\Http\Response
      */
-    public function update(ApartamentoRequest $request, Apartamento $apartamento)
+    public function update(UpdateApartamentoRequest $request, $apartamentoId)
     {
-        $response = ApartamentoRepository::update($request, $apartamento);
+        $response = ApartamentoRepository::update($request, $apartamentoId);
         return response($response, $response['code']);
     }
 

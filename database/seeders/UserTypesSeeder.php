@@ -24,7 +24,9 @@ class UserTypesSeeder extends Seeder
         foreach ($types as $type) {
             UserType::create([
                 'nome' => $type,
-                'is_admin' => !($type == 'morador')
+                'is_admin' => !($type == 'morador'),
+                'default_admin' => ($type == 'admin'),
+                'default_user' => ($type == 'morador')
             ]);
         }
     }

@@ -18,6 +18,7 @@ class PermissoesWithModulosResource extends JsonResource
             'id' => $this->id,
             'modulo_id' => $this->modulo_sistema_id,
             'modulo' => $this->modulo->nome,
+            'label' => $this->modulo->label,
             'acessar' => $this->acessar,
             'criar' => $this->criar,
             'editar' => $this->editar,

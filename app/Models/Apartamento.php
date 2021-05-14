@@ -18,8 +18,10 @@ class Apartamento extends Model
         'andar'
     ];
 
+    public $casts = ['numero' => 'string'];
+
     public function proprietarios()
     {
-        return $this->belongsTo(Proprietario::class);
+        return $this->belongsToMany(Proprietario::class, 'apartamentos_proprietarios');
     }
 }

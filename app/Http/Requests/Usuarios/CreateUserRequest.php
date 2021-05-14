@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Usuarios;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApartamentoRequest extends FormRequest
+class CreateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class ApartamentoRequest extends FormRequest
     public function rules()
     {
         return [
-            'bloco' => 'required|string',
-            'numero' => 'required|string',
-            'andar' => 'required|string',
-            'ativo' => 'present|boolean',
+            'name' => 'required|string',
+            'email' => 'required|email:rfc|unique:App\Models\User,email',
+            'password' => 'required|confirmed',
+            'userType' => 'required|exists:App\Models\Sistema\UserType,id',
         ];
     }
 }

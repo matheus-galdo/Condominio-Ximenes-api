@@ -16,7 +16,6 @@ class CreateProprietarios extends Migration
         Schema::create('proprietarios', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
-            $table->foreignId('apartamento_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
             $table->boolean('aprovado')->default(false);
             $table->string('telefone', 14);
         });

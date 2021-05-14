@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Documentos\CreateDocumentoRequest;
+use App\Http\Requests\Documentos\UpdateDocumentoRequest;
+use App\Http\Resources\DocumentoResource;
 use App\Models\Documento;
+use App\Repositories\DocumentoRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentosController extends Controller
 {
@@ -14,7 +20,13 @@ class DocumentosController extends Controller
      */
     public function index()
     {
-        //
+        
+        if(auth()->user()->typeName->is_admin){
+            return response(DocumentoResource::collection(Documento::withTrashed()->get()));
+        }
+        
+        $documentosBuilder = Documento::where('data_expiracao', null)->orWhere('data_expiracao', '>=', now());
+        return response(DocumentoResource::collection($documentosBuilder->get()));
     }
 
     /**
@@ -23,9 +35,10 @@ class DocumentosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateDocumentoRequest $request)
     {
-        //
+        $response = DocumentoRepository::create($request);
+        return response($response, $response['code']);
     }
 
     /**
@@ -36,7 +49,8 @@ class DocumentosController extends Controller
      */
     public function show(Documento $documento)
     {
-        //
+        $documento->setAttribute('size', Storage::size($documento->path));
+        return $documento;
     }
 
     /**
@@ -46,9 +60,10 @@ class DocumentosController extends Controller
      * @param  \App\Models\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Documento $documento)
+    public function update(UpdateDocumentoRequest $request, $documentoId)
     {
-        //
+        $response = DocumentoRepository::update($request, $documentoId);
+        return response($response, $response['code']);
     }
 
     /**
@@ -59,6 +74,7 @@ class DocumentosController extends Controller
      */
     public function destroy(Documento $documento)
     {
-        //
+        $response = DocumentoRepository::delete($documento);
+        return response($response, $response['code']);
     }
 }

@@ -14,13 +14,15 @@ class Proprietario extends Model
         'apartamento_id',
         'telefone'
     ];
+    
+    public $timestamps = false;
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function apartamento(){
-        return $this->hasMany(Apartamento::class);
+    public function apartamentos(){
+        return $this->belongsToMany(Apartamento::class, 'apartamentos_proprietarios');
     }
 }

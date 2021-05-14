@@ -2,10 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\Apartamentos\ApartamentoProprietarioResource;
 use App\Models\Apartamento;
 
-class ApartamentoRepository{
-    
+class ApartamentoRepository
+{
+
     /**
      * create
      *
@@ -15,32 +17,34 @@ class ApartamentoRepository{
     public static function create($request)
     {
         try {
-           
+
             Apartamento::create([
-                'bloco' => $request->titulo,
-                'numero' => $request->descricao,
-                'andar' => $request->dataExpiracao,
-                'ativo' => $request->ativo,
+                'bloco' => $request->bloco,
+                'numero' => $request->numero,
+                'andar' => $request->andar
             ]);
 
             return ['status' => true, 'code' => 201];
         } catch (\Throwable $th) {
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 
     public static function show($id)
     {
-        
+
         try {
-            $apartamento = Apartamento::with(['proprietarios'])->findOrFail($id)->toArray();
-            $apartamento['code'] = 201;
+            $apartamento = new ApartamentoProprietarioResource(Apartamento::with(['proprietarios.user.typeName'])->findOrFail($id));
+            // $apartamento = Apartamento::with(['proprietarios.user.typeName'])->findOrFail($id);
+
+            // $apartamento = $apartamento->toArray();
+            // $apartamento['code'] = 201;
             return $apartamento;
         } catch (\Throwable $th) {
             return ['error' => $th, 'code' => 400];
         }
     }
-    
+
     /**
      * update
      *
@@ -48,37 +52,36 @@ class ApartamentoRepository{
      * @param  mixed $apartamento
      * @return void
      */
-    public static function update($request, $apartamento)
-    {        
+    public static function update($request, $id)
+    {
         try {
-            $apartamento->a = $request->titulo;
-            $apartamento->a = $request->descricao;
-            $apartamento->a = $request->dataExpiracao;
-            $apartamento->a = $request->ativo;
+            $apartamento = Apartamento::withTrashed()->findOrFail($id);
 
-            $apartamento->save();
+            if (isset($request->ativar)) {
+                ($request->ativar) ? $apartamento->restore() : $apartamento->delete();
+            } else {
+                $apartamento->bloco = $request->bloco;
+                $apartamento->numero = $request->numero;
+                $apartamento->andar = $request->andar;
+                $apartamento->save();
+            }
 
             return ['status' => true, 'code' => 201];
         } catch (\Throwable $th) {
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 
     public static function delete($apartamento)
     {
         try {
-            $a = null;
             if ($apartamento->trashed()) {
                 $apartamento->forceDelete();
-            }else{
-                $apartamento->delete();
             }
 
             return ['status' => true, 'code' => 200];
-
         } catch (\Throwable $th) {
-            //throw $th;
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 }

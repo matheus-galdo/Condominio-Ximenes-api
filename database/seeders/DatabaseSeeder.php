@@ -15,12 +15,18 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UsersSeeder::class,
-            UserTypesSeeder::class,
+            //dados essenciais do sistema
             OcorrenciaEventosFollowupSeeder::class,
             ModulosSistemaSeeder::class,
+
+            //instancias iniciais
+            UserTypesSeeder::class,
+            UsersSeeder::class,
+            
+            //instancias para debug dos modulos
             PermissoesSeeder::class,
-            ApartamentosSeeder::class
+            ApartamentosSeeder::class,
+            ProprietariosSeeder::class,
         ]);
 
     }

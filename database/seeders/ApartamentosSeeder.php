@@ -14,9 +14,16 @@ class ApartamentosSeeder extends Seeder
      */
     public function run()
     {
-        Apartamento::factory(10)->create();
 
-        // \App\Models\User::factory(10)->create();
+        for ($i=1; $i <= 8; $i++) { 
+            $andar = rand(1, 8);
+            Apartamento::create([
+                'bloco' => ($andar <= 4)? 'A': 'B',
+                'numero' => "{$andar}{$i}",
+                'andar' => $andar
+            ]);      
+        }
+        // Apartamento::factory(10)->create();
 
     }
 }

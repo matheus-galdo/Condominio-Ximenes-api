@@ -14,19 +14,16 @@ class UserTypeResource extends JsonResource
      */
     public function toArray($request)
     {
-
         $resource = [
             'id' => $this->id,
             'nome' => $this->nome,
             'deleted_at' => $this->deleted_at,
             'is_admin' => $this->is_admin,
-            't' => $this->properties
-            // 'permissoes_with_modulo' => PermissoesWithModulosResource::collection($this->permissoes_with_modulo) || null,
         ];
 
-        // if ($this->permissoes_with_modulo) {
-        //     $resource['permissoes'] = 'aaaaaaaaaa';
-        // }
+        if ($this->accessablePermissoesWithModulo) {
+            $resource['permissoes_with_modulo'] = $this->accessablePermissoesWithModulo;
+        }
 
         return $resource;
     }

@@ -17,6 +17,8 @@ class CreateUserTypes extends Migration
             $table->id();
             $table->string('nome', 50);
             $table->boolean('is_admin')->default(false);
+            $table->boolean('default_admin')->default(false);
+            $table->boolean('default_user')->default(false);
             $table->softDeletes();
         });
     }

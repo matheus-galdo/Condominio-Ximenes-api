@@ -4,8 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApartamentos extends Migration
+class AlteringUsersTable extends Migration
 {
+
     /**
      * Run the migrations.
      *
@@ -13,11 +14,10 @@ class CreateApartamentos extends Migration
      */
     public function up()
     {
-        Schema::create('apartamentos', function (Blueprint $table) {
-            $table->id();
-            $table->string('bloco');
-            $table->string('numero');
-            $table->string('andar');
+        Schema::table('users', function(Blueprint $table){
+            $table->after('name', function ($table){
+                $table->foreignId('type')->constrained('user_types')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            });
             $table->softDeletes();
         });
     }
@@ -29,6 +29,6 @@ class CreateApartamentos extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('apartamentos');
+        //
     }
 }

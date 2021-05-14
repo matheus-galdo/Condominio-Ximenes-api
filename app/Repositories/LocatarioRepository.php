@@ -38,8 +38,7 @@ class LocatarioRepository
 
             return 'ok';
         } catch (\Throwable $th) {
-
-            return ['error' => $th];
+            return exceptionApi($th, 400);
         }
     }
 
@@ -72,8 +71,7 @@ class LocatarioRepository
 
             return 'ok';
         } catch (\Throwable $th) {
-            throw $th;
-            return ['error' => $th];
+            return exceptionApi($th, 400);
         }
     }
 
@@ -85,8 +83,7 @@ class LocatarioRepository
             Locatario::where('user_id', $user->id)->findOrFail($id)->delete();
             return 'ok';
         } catch (\Throwable $th) {
-            throw $th;
-            return ['error' => $th];
+            return exceptionApi($th, 400);
         }
     }
 }

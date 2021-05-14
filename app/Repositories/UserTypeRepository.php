@@ -23,23 +23,13 @@ class UserTypeRepository
                     PermissoesRepository::create($userType, (object) $permissao);
                 }
 
-                $moduloInstance = Modulos::where('nome', 'modulos')->firstOrFail();
-                Permissoes::create([
-                    'user_type_id' => $userType->id,
-                    'modulo_sistema_id' => $moduloInstance->id,
-                    'acessar' => true,
-                    'visualizar' => true,
-                    'gerenciar' => false,
-                    'criar' => false,
-                    'editar' => false,
-                    'excluir' => false,
-                ]);
+                PermissoesRepository::createInternal($userType);
+                
             });
 
             return ['status' => true, 'code' => 201];
         } catch (\Throwable $th) {
-            // throw $th;
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 
@@ -49,7 +39,16 @@ class UserTypeRepository
             $userType = UserType::withTrashed()->with(['permissoes', 'permissoes.modulo'])->findOrFail($id);
 
             if (isset($request->ativar)) {
-                ($request->ativar) ? $userType->restore() : $userType->delete();
+                
+                if($request->ativar){
+                    $userType->restore();
+                    $userType->users()->restore();
+                }else{
+                    $userType->delete();
+                    $userType->users()->delete();
+                }
+            
+            
             } else {
                 DB::transaction(function () use ($request, $userType) {
                     $userType->nome = $request->nome;
@@ -65,8 +64,7 @@ class UserTypeRepository
 
             return ['status' => true, 'code' => 200];
         } catch (\Throwable $th) {
-            // throw $th;
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 
@@ -79,16 +77,18 @@ class UserTypeRepository
     public static function delete(UserType $userType)
     {
         try {
-            if ($userType->trashed()) {
-                $userType->forceDelete();
-            } else {
-                $userType->delete();
+            if ($userType->default_user || $userType->default_admin) {
+                return ['error' => 'o recurso não pode ser excluido', 'code' => 403];
             }
-
+            
+            if($userType->trashed()){
+                $userType->forceDelete();
+                $userType->users()->forceDelete();
+            }
+            
             return ['status' => true, 'code' => 200];
         } catch (\Throwable $th) {
-            //throw $th;
-            return ['error' => $th, 'code' => 400];
+            return exceptionApi($th, 400);
         }
     }
 }

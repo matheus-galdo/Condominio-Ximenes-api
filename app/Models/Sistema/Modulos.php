@@ -16,8 +16,17 @@ class Modulos extends Model
         'nome'
     ];
 
+    public $casts = [
+        'interno' => 'boolean'
+    ];
+
     public function permissoes()
     {
         return $this->hasMany(Permissoes::class, 'modulo_sistema_id');
+    }
+
+    public function scopeAcessableModulos($builder)
+    {
+        return $builder->where('interno', false);
     }
 }

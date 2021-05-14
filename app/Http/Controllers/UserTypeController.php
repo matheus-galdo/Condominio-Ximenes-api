@@ -16,9 +16,10 @@ class UserTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response(UserType::withTrashed()->orderBy('nome')->paginate(15));
+        if($request->page) return response(UserType::withTrashed()->orderBy('nome')->paginate(15));
+        return response(UserType::withTrashed()->orderBy('nome')->get());
     }
 
     /**
@@ -41,15 +42,8 @@ class UserTypeController extends Controller
      */
     public function show($userTypeId)
     {
-        $userType = UserType::withTrashed()->with(['permissoesWithModulo'])->find($userTypeId);
-
-        foreach ($userType->permissoesWithModulo as $key => $value) {
-            if ($value->modulo['nome'] == 'modulos') {
-                unset($userType->permissoesWithModulo[$key]);
-            }
-        }
-
-        return response($userType);
+        $userType = UserType::withTrashed()->with(['accessablePermissoesWithModulo'])->find($userTypeId);
+        return response(new UserTypeResource($userType));
     }
 
     /**

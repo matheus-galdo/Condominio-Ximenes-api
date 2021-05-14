@@ -16,8 +16,12 @@ class CreateDocumentos extends Migration
         Schema::create('documentos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
+            $table->string('nome_original');
             $table->string('extensao');
-            $table->string('path');
+            $table->string('path')->unique();
+            $table->boolean('is_public');
+            $table->date('data_expiracao')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

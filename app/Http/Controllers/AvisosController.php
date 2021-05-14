@@ -16,7 +16,7 @@ class AvisosController extends Controller
      */
     public function index(Request $request)
     {
-        return Aviso::orWhere('data_expiracao', '>=', Carbon::now())->orWhereNull('data_expiracao')->get();
+        return Aviso::get();
     }
 
     /**

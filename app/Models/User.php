@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -12,7 +13,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
 
     protected $primaryKey = 'id';
@@ -34,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
         'type',
         'email',
         'password',
+        'deleted_at'
     ];
 
     /**
@@ -78,7 +80,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function typeName()
     {
-        return $this->belongsTo(Sistema\UserType::class, 'type');
+        return $this->belongsTo(Sistema\UserType::class, 'type')->withTrashed();
     }
 
     public function locatarios()
@@ -93,6 +95,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function proprietario()
     {
-        return $this->hasMany(Proprietario::class);
+        return $this->hasOne(Proprietario::class);
     }
 }
