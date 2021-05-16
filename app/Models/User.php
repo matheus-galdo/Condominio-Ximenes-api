@@ -97,4 +97,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(Proprietario::class);
     }
+
+    public function boletosCadastrados()
+    {
+        return $this->belongsTo(User::class, 'cadastrado_por_user_id');
+    }
 }

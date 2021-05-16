@@ -24,4 +24,9 @@ class Apartamento extends Model
     {
         return $this->belongsToMany(Proprietario::class, 'apartamentos_proprietarios');
     }
+
+    public function boletos()
+    {
+        return $this->hasMany(Boleto::class);
+    }
 }

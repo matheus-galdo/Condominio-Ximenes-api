@@ -23,25 +23,22 @@ class DocumentoRepository
     public static function create($request)
     {
         try {
-            foreach ($request->arquivos as $file) {
-
+            try {
+                $file = $request->arquivos[0];
                 $filePath = $file->store('userFiles/documents');
-                
-                
-                try {
-                    $documento = Documento::create([
-                        'nome' => $request->nome_arquivo,
-                        'data_expiracao' => $request->data_expiracao,
-                        'is_public' => (boolean) $request->publico,
 
-                        'nome_original' => $file->getClientOriginalName(),
-                        'extensao' => $file->extension(),
-                        'path' => $filePath,
-                    ]);
-                } catch (\Throwable $th) {
-                    Storage::delete($filePath);
-                    throw $th;                    
-                }
+                $documento = Documento::create([
+                    'nome' => $request->nome_arquivo,
+                    'data_expiracao' => $request->data_expiracao,
+                    'is_public' => (bool) $request->publico,
+
+                    'nome_original' => $file->getClientOriginalName(),
+                    'extensao' => $file->extension(),
+                    'path' => $filePath,
+                ]);
+            } catch (\Throwable $th) {
+                Storage::delete($filePath);
+                throw $th;
             }
 
             return ['status' => true, 'code' => 201];
@@ -70,7 +67,6 @@ class DocumentoRepository
                 } else {
                     $documento->delete();
                 }
-            
             } else {
                 $documento->nome = $request->nome_arquivo;
                 $documento->is_public = $request->publico;

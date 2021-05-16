@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Boleto;
 use App\Models\Documento;
+use App\Services\PdfParser;
+use App\Services\PdfToStringService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,6 +31,10 @@ class FileDownloadController extends Controller
 
         if ($request->module == 'documento') {
             return $this->downloadDocumento($request) ;
+        }
+
+        if ($request->module == 'boleto') {
+            return $this->downloadBoleto($request) ;
         }
 
 
@@ -59,19 +65,19 @@ class FileDownloadController extends Controller
 
     public function downloadBoleto($request)
     {
-        // return response(['a' => $documentoId]);
-
+        $user = auth()->user();
         $documento = Boleto::find($request->file);
 
-        return Storage::download($documento->path);
-
-        $user = auth()->user();
-        return response(['a' => $documento]);
-
-        if (!$user->tipeName->is_admin) {
-            //baixar
+        if ($user->typeName->is_admin) {
+            return Storage::download($documento->path, $documento->nome_original, self::DOWNLOAD_FILENAME_HEADER);
         }
 
-        return response('alo');
+        $proprietarioApartamentosId = $user->proprietario->apartamentos->pluck('id')->toArray();
+
+        if(in_array($documento->apartamento_id,$proprietarioApartamentosId)){
+            return Storage::download($documento->path, $documento->nome_original, self::DOWNLOAD_FILENAME_HEADER);
+        }
+        
+        return response()->json(['error' => 'você não pode acessar este arquivo'], 400);
     }
 }

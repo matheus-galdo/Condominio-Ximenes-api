@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Usuarios;
+namespace App\Http\Requests\Proprietarios;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,8 +28,9 @@ class CreateProprietarioRequest extends FormRequest
             'email' => 'required|email:rfc|unique:App\Models\User,email',
             'password' => 'required|confirmed',
             'userType' => 'required|exists:App\Models\Sistema\UserType,id',
+            'celular' => 'present|nullable|string|min:8',
             
-            'apartamento' => 'required|array|exists:App\Models\Sistema\UserType,id',
+            'apartamento' => 'required|array|exists:App\Models\Apartamento,id',
         ];
     }
 }

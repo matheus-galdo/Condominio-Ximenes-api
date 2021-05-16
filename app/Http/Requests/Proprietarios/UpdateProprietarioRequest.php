@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Usuarios;
+namespace App\Http\Requests\Proprietarios;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -30,8 +30,10 @@ class UpdateProprietarioRequest extends FormRequest
             'email' => 'required_without:ativar|email:rfc',
             'password' => 'nullable|confirmed',
             'userType' => 'required_without:ativar|exists:App\Models\Sistema\UserType,id',
+            'celular' => 'sometimes|nullable|string|min:8',
+
                 
-            'apartamento' => 'required_without:ativar|array|exists:App\Models\Sistema\UserType,id',
+            'apartamento' => 'required_without:ativar|array|exists:App\Models\Apartamento,id',
         ];
     }
 }

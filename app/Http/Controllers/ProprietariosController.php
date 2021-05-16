@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Proprietarios\CreateProprietarioRequest;
+use App\Http\Requests\Proprietarios\UpdateProprietarioRequest;
 use App\Http\Resources\Proprietarios\UserProprietarioResource;
 use App\Models\Proprietario;
 use App\Models\User;
@@ -33,7 +35,7 @@ class ProprietariosController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateProprietarioRequest $request)
     {
         $response = ProprietarioRepository::create($request);
         return response($response, $response['code']);
@@ -63,7 +65,7 @@ class ProprietariosController extends Controller
      * @param  \App\Models\Proprietario  $proprietario
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $userId)
+    public function update(UpdateProprietarioRequest $request, $userId)
     {
         $response = ProprietarioRepository::update($request, $userId);
         return response($response, $response['code']);

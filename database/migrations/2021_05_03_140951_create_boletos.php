@@ -19,10 +19,12 @@ class CreateBoletos extends Migration
             $table->float('valor', 8, 2, true);
             $table->text('codigo_barras');
             $table->date('vencimento');
+            $table->date('data_pagamento')->nullable();
             $table->boolean('pago');
             $table->string('path');
             $table->foreignId('apartamento_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
             $table->foreignId('cadastrado_por_user_id')->constrained('users')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
