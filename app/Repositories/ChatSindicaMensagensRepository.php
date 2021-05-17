@@ -40,10 +40,10 @@ class ChatSindicaMensagensRepository
 
                 if (empty($chat)) {
                     $chat = ChatSindica::create([
-                        'proprietario_id' => $request->proprietario
+                        'proprietario_id' => isset($request->proprietario)? $request->proprietario : $user->proprietario->id
                     ]);
                 }
-
+                    
                 ChatSindicaMensagens::create([
                     'autor_mensagem' => $user->id,
                     'chat_sindica_id' => $chat->id,

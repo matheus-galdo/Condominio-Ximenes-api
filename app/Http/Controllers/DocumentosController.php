@@ -9,6 +9,7 @@ use App\Http\Resources\DocumentoResource;
 use App\Models\Documento;
 use App\Repositories\DocumentoRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentosController extends Controller
@@ -20,12 +21,16 @@ class DocumentosController extends Controller
      */
     public function index()
     {
-        
-        if(auth()->user()->typeName->is_admin){
+        // DB::enableQueryLog();
+        if (auth()->user()->typeName->is_admin) {
             return response(DocumentoResource::collection(Documento::withTrashed()->get()));
         }
-        
-        $documentosBuilder = Documento::where('data_expiracao', null)->orWhere('data_expiracao', '>=', now());
+
+        $documentosBuilder = Documento::where('is_public', true)->where(function($builder){
+            $builder->where('documentos.data_expiracao', null);
+            $builder->orWhere('documentos.data_expiracao', '>=', now());
+        });
+
         return response(DocumentoResource::collection($documentosBuilder->get()));
     }
 

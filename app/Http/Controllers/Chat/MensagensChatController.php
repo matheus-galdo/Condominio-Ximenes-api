@@ -25,20 +25,12 @@ class MensagensChatController extends Controller
         }
         	
         return response()->json($userChat);
-
-        // if ($userChat->proprietario_id == $user->proprietario->id) {
-        //     return response()->json($userChat->mensagens());
-        // }
-
-
-        return response()->json('aee boa', 200);
     }
 
 
     public function createMessage(Request $request)
     {
         $response = ChatSindicaMensagensRepository::create($request);
-
         $user = auth()->user();
         $userChat = ChatSindica::with('mensagens.autor')->find($response['chat']->id);
 

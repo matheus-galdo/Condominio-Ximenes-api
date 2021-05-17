@@ -34,13 +34,13 @@ class AuthController extends Controller
         $remember = $request->remember;
 
         if (!$token = Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized', 'message' =>'Usuário ou senha incorretos'], 401);
         }
 
         $logedUser = User::find(auth()->user()->id);
 
         if(!empty($logedUser->typeName->deleted_at) || !empty($logedUser->deleted_at)){
-            return response()->json(['error' => 'Unauthorized', 'message' =>'Usuário está desativado'], 401);
+            return response()->json(['error' => 'Unauthorized', 'message' =>'Usuário indispnível'], 401);
         }
 
         if(!$logedUser->typeName->is_admin && !$logedUser->proprietario->aprovado){

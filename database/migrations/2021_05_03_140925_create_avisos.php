@@ -19,6 +19,7 @@ class CreateAvisos extends Migration
             $table->text('descricao');
             $table->date('data_expiracao')->nullable();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

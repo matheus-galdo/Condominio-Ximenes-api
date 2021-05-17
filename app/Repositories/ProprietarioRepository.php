@@ -70,10 +70,6 @@ class ProprietarioRepository
                     $user->delete();
                 }
 
-            } elseif(isset($request->aprovar)) {
-                $user->proprietario()->aprovado = true;
-                $user->save();
-
             } else {
 
                 if (!in_array($request->userType, UserType::getAvailableTypes(false))) throw new \Exception("Tipo de usuário não compatível", 1);
@@ -99,6 +95,7 @@ class ProprietarioRepository
                     $user->name = $request->name;
                     $user->email = $request->email;
                     $user->type = $request->userType;
+                    $user->proprietario->aprovado = true;
                     $user->proprietario->telefone = (!empty($request->celular))? $request->celular: 'atualizar' ;                    
                     if (isset($request->password)) $user->password = password_hash($request->password, PASSWORD_BCRYPT);
                     

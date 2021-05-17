@@ -16,7 +16,7 @@ class CreateApartamentos extends Migration
         Schema::create('apartamentos', function (Blueprint $table) {
             $table->id();
             $table->string('bloco');
-            $table->integer('numero');
+            $table->integer('numero')->unique();
             $table->string('andar');
             $table->softDeletes();
         });

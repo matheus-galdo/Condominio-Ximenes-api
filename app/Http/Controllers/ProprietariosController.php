@@ -20,12 +20,11 @@ class ProprietariosController extends Controller
      */
     public function index(Request $request)
     {
-        $defaultOrder = 'proprietarios.aprovado';
-        $order = 'data_criacao';
+        $order = 'nao_aprovados';
 
         $orderByOptions = [
-            'aprovados' => 'proprietarios.aprovado',
-            'nao_aprovados' => ['proprietarios.aprovado', 'DESC'],
+            'nao_aprovados' => ['proprietarios.aprovado'],
+            'aprovados' => ['proprietarios.aprovado', 'DESC'],
             'data_criacao' => ['users.created_at', 'ASC'],
             'data_criacao_desc' => ['users.created_at', 'DESC'],
             'deletados' => ['proprietarios.deleted_at'],
