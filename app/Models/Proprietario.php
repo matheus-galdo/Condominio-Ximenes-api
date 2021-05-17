@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Chat\ChatSindica;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,8 +12,13 @@ class Proprietario extends Model
 
     public $fillable = [
         'user_id',
-        'apartamento_id',
-        'telefone'
+        'telefone',
+        'aprovado',
+        'apartamento_solicitado'
+    ];
+
+    public $casts = [
+        'aprovado' => 'boolean',
     ];
     
     public $timestamps = false;
@@ -24,5 +30,9 @@ class Proprietario extends Model
 
     public function apartamentos(){
         return $this->belongsToMany(Apartamento::class, 'apartamentos_proprietarios');
+    }
+
+    public function chatSindica(){
+        return $this->hasOne(ChatSindica::class);
     }
 }

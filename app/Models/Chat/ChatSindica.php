@@ -10,6 +10,9 @@ class ChatSindica extends Model
 {
     use HasFactory;
 
+    public $table = 'chat_sindica';
+    public $timestamps = false;
+    
     public $fillable = [
         "proprietario_id"
     ];

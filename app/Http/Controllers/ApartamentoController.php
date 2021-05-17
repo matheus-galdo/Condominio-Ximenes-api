@@ -21,7 +21,14 @@ class ApartamentoController extends Controller
         $apartamentosBuilder = Apartamento::withTrashed();
         if(isset($request->proprietarios) && $request->proprietarios) $apartamentosBuilder->with(['proprietarios.user']);
         
-        return response($apartamentosBuilder->orderBy('deleted_at')->orderBy('numero')->get());
+        if (auth()->user()->typeName->is_admin) {
+            return response($apartamentosBuilder->orderBy('deleted_at')->orderBy('numero')->get());
+        }
+
+        return response(Apartamento::has('proprietarios')->whereHas('proprietarios', function ($builder)
+        {
+            $builder->where('proprietario_id', auth()->user()->proprietario->id);
+        })->orderBy('numero')->get());
     }
 
     /**

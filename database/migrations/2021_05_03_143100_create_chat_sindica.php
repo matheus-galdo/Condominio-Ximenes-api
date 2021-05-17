@@ -15,7 +15,7 @@ class CreateChatSindica extends Migration
     {
         Schema::create('chat_sindica', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('proprietario_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->foreignId('proprietario_id')->constrained('proprietarios')->onUpdate('cascade')->onDelete('cascade')->default(0);
         });
 
         Schema::create('chat_sindica_mensagens', function (Blueprint $table) {

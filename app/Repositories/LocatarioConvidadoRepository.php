@@ -17,11 +17,11 @@ class LocatarioConvidadoRepository
     public static function create($convidado, $locatario)
     {
         LocatarioConvidado::create([
-            'nome' => $convidado['nomeConvidado']['value'],
-            'cpf' => clearCpf($convidado['cpf']['value']),
-            'celular' => $convidado['celular']['value'],
-            'email' => $convidado['email']['value'],
-            'observacoes' => $convidado['observacoes']['value'],
+            'nome' => $convidado['nomeConvidado'],
+            'cpf' => clearCpf($convidado['cpf']),
+            'celular' => $convidado['celular'],
+            'crianca' => (bool) $convidado['crianca'],
+            'observacoes' => $convidado['observacoes'],
             'locatario_id' => $locatario->id
         ]);
     }
@@ -41,14 +41,14 @@ class LocatarioConvidadoRepository
         foreach ($request->convidados as $convidado) {
 
             if (isset($convidado['id'])) {
-                $convidadoId = $convidado['id']['value'];
+                $convidadoId = $convidado['id'];
 
                 $findedConvidado = $savedConvidados[$convidadoId];                    
-                $findedConvidado->nome = $convidado['nomeConvidado']['value'];
-                $findedConvidado->cpf = $convidado['cpf']['value'];
-                $findedConvidado->celular = $convidado['celular']['value'];
-                $findedConvidado->email = $convidado['email']['value'];
-                $findedConvidado->observacoes = $convidado['observacoes']['value'];
+                $findedConvidado->nome = $convidado['nomeConvidado'];
+                $findedConvidado->cpf = $convidado['cpf'];
+                $findedConvidado->celular = $convidado['celular'];
+                $findedConvidado->email = $convidado['email'];
+                $findedConvidado->observacoes = $convidado['observacoes'];
 
                 $findedConvidado->save();
                 $savedConvidados->forget($convidadoId);

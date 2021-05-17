@@ -24,7 +24,7 @@ class CreateLocatariosTable extends Migration
             $table->text('observacoes')->nullable();
             $table->boolean('possui_veiculos');
             $table->boolean('possui_convidados');
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
+            $table->foreignId('apartamento_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
 
@@ -44,8 +44,8 @@ class CreateLocatariosTable extends Migration
             $table->id();
             $table->string('nome');
             $table->string('cpf');
-            $table->string('celular');
-            $table->string('email');
+            $table->string('celular')->nullable();
+            $table->boolean('crianca')->default(false);
             $table->text('observacoes')->nullable();
             $table->foreignId('locatario_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
         });

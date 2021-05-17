@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Locatario;
+use App\Models\User;
 
 class LocatarioRepository
 {
@@ -11,6 +12,7 @@ class LocatarioRepository
     {
 
         try {
+            $user = User::find(auth()->user()->id);
             $hasVeiculos = (count($request->veiculos) > 0);
             $hasConvidados = (count($request->convidados) > 0);
 
@@ -24,7 +26,7 @@ class LocatarioRepository
                 'observacoes' => $request->observacoes,
                 'possui_veiculos' => $hasVeiculos,
                 'possui_convidados' => $hasConvidados,
-                'user_id' => auth()->user()->id
+                'apartamento_id' => $request->apartamento
             ]);
 
 
@@ -46,9 +48,7 @@ class LocatarioRepository
     {
         try {
 
-            $locatario = Locatario::with(['convidados', 'veiculos'])
-                ->where('user_id', auth()->user()->id)
-                ->findOrFail($id);
+            $locatario = Locatario::with(['convidados', 'veiculos'])->findOrFail($id);
 
             LocatarioVeiculoRepository::update($request, $locatario);
             LocatarioConvidadoRepository::update($request, $locatario);
@@ -65,6 +65,7 @@ class LocatarioRepository
             $locatario->observacoes = $request->observacoes;
             $locatario->possui_veiculos = $hasVeiculos;
             $locatario->possui_convidados = $hasConvidados;
+            $locatario->apartamento_id = $request->apartamento;
 
             $locatario->save();
 

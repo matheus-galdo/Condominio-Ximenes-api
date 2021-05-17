@@ -19,12 +19,12 @@ class Locatario extends Model
         'observacoes',
         'possui_veiculos',
         'possui_convidados',
-        'user_id'
+        'apartamento_id'
     ];
 
-    public function user()
+    public function apartamento()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Apartamento::class, 'apartamento_id');
     }
 
     public function veiculos()

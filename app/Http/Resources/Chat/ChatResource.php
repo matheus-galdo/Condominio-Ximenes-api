@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Proprietarios;
+namespace App\Http\Resources;
 
+use App\Http\Resources\Proprietarios\UserProprietarioResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserProprietarioResource extends JsonResource
+class ChatResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -27,10 +28,9 @@ class UserProprietarioResource extends JsonResource
 
             'telefone' => $this->proprietario->telefone,
             'aprovado' => $this->proprietario->aprovado,
-            'apartamento_solicitado' => $this->proprietario->apartamento_solicitado,
 
 
-            'apartamentos' => ApartamentosProprietarioResource::collection($this->proprietario->apartamentos)        
+            'apartamentos' => UserProprietarioResource::collection($this->proprietario->apartamentos)        
         ];
     }
 }

@@ -17,7 +17,8 @@ class CreateProprietarios extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->default(0);
             $table->boolean('aprovado')->default(false);
-            $table->string('telefone', 14);
+            $table->text('apartamento_solicitado')->nullable()->default('');
+            $table->string('telefone', 15);
         });
     }
 

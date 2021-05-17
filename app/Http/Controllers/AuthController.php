@@ -37,6 +37,16 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $logedUser = User::find(auth()->user()->id);
+
+        if(!empty($logedUser->typeName->deleted_at) || !empty($logedUser->deleted_at)){
+            return response()->json(['error' => 'Unauthorized', 'message' =>'Usuário está desativado'], 401);
+        }
+
+        if(!$logedUser->typeName->is_admin && !$logedUser->proprietario->aprovado){
+            return response()->json(['error' => 'Unauthorized', 'message' =>'Usuário aguardando aprovação da administração'], 401);
+        }
+
         return response()->json([
             'token' => $this->respondWithToken($token),
             'user' => new UserResource(auth()->user())
@@ -91,10 +101,5 @@ class AuthController extends Controller
             'created_at_datetime' => new DateTime,
             'created_at' => Carbon::now()
         ];
-    }
-
-    public function FunctionName(Type $var = null)
-    {
-        # code...
     }
 }

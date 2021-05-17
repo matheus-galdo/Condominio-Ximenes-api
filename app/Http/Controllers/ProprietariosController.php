@@ -9,6 +9,7 @@ use App\Models\Proprietario;
 use App\Models\User;
 use App\Repositories\ProprietarioRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProprietariosController extends Controller
 {
@@ -19,14 +20,29 @@ class ProprietariosController extends Controller
      */
     public function index(Request $request)
     {
-        $builder = User::has('proprietario')->with('typeName')->whereHas('typeName', function ($builder){
-            $builder->where('is_admin', false);
-        })->withTrashed()->orderBy('deleted_at')->orderBy('name');
+        $defaultOrder = 'proprietarios.aprovado';
+        $order = 'data_criacao';
 
-        if($request->page) return response($builder->paginate(15));
+        $orderByOptions = [
+            'aprovados' => 'proprietarios.aprovado',
+            'nao_aprovados' => ['proprietarios.aprovado', 'DESC'],
+            'data_criacao' => ['users.created_at', 'ASC'],
+            'data_criacao_desc' => ['users.created_at', 'DESC'],
+            'deletados' => ['proprietarios.deleted_at'],
+        ];
+
+        $builder = User::with([
+            'typeName' => function ($builder) {
+                $builder->where('is_admin', false);
+            },
+        ])
+            ->join('proprietarios', 'users.id', '=', 'proprietarios.user_id')
+            ->addSelect('*', 'proprietarios.id as proprietario_id', 'users.id as id')
+            ->orderBy(...$orderByOptions[$order])
+            ->withTrashed();
+
+        if ($request->page) return response($builder->paginate(15));
         return response($builder->get());
-
-
     }
 
     /**
@@ -50,9 +66,9 @@ class ProprietariosController extends Controller
     public function show($userId)
     {
         $proprietario = User::withTrashed()->has('proprietario')->with(['typeName', 'proprietario.apartamentos'])
-        ->whereHas('typeName', function ($builder){
-            $builder->where('is_admin', false);
-        })->withTrashed()->find($userId);
+            ->whereHas('typeName', function ($builder) {
+                $builder->where('is_admin', false);
+            })->withTrashed()->find($userId);
 
 
         return response(new UserProprietarioResource($proprietario));

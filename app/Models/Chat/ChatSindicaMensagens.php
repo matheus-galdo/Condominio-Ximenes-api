@@ -2,6 +2,7 @@
 
 namespace App\Models\Chat;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,5 +22,10 @@ class ChatSindicaMensagens extends Model
     public function chatSindica()
     {
         return $this->belongsTo(chatSindica::class);
+    }
+
+    public function autor()
+    {
+        return $this->belongsTo(User::class, 'autor_mensagem');
     }
 }

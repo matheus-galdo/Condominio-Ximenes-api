@@ -15,7 +15,7 @@ class LocatarioConvidado extends Model
         'nome',
         'cpf',
         'celular',
-        'email',
+        'crianca',
         'observacoes',
         'locatario_id'
     ];

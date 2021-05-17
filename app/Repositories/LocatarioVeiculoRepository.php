@@ -17,9 +17,9 @@ class LocatarioVeiculoRepository
     public static function create($veiculo, $locatario)
     {
         LocatarioVeiculo::create([
-            'placa' => $veiculo['placa']['value'],
-            'modelo' => $veiculo['modelo']['value'],
-            'cor' => $veiculo['cor']['value'],
+            'placa' => $veiculo['placa'],
+            'modelo' => $veiculo['modelo'],
+            'cor' => $veiculo['cor'],
             'locatario_id' => $locatario->id
         ]);
     }
@@ -41,12 +41,12 @@ class LocatarioVeiculoRepository
         foreach ($request->veiculos as $veiculo) {
 
             if (isset($veiculo['id'])) {
-                $veiculoId = $veiculo['id']['value'];
+                $veiculoId = $veiculo['id'];
 
                 $findedVeiculo = $savedVeiculos[$veiculoId];                    
-                $findedVeiculo->placa = $veiculo['placa']['value'];
-                $findedVeiculo->modelo = $veiculo['modelo']['value'];
-                $findedVeiculo->cor = $veiculo['cor']['value'];
+                $findedVeiculo->placa = $veiculo['placa'];
+                $findedVeiculo->modelo = $veiculo['modelo'];
+                $findedVeiculo->cor = $veiculo['cor'];
                 $findedVeiculo->save();
                 $savedVeiculos->forget($veiculoId);
             

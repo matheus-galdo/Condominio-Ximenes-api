@@ -16,9 +16,9 @@ class UserTypesSeeder extends Seeder
     {
         $types = [
             'admin',
+            'morador',
             'sindica',
             'porteiro',
-            'morador',
         ];
 
         foreach ($types as $type) {

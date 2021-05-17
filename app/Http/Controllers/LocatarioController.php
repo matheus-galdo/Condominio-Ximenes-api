@@ -21,7 +21,7 @@ class LocatarioController extends Controller
      */
     public function index()
     {
-        return Locatario::with(['user'])->get();
+        return Locatario::with(['apartamento'])->get();
     }
 
     /**
@@ -32,6 +32,7 @@ class LocatarioController extends Controller
      */
     public function store(CreateLocatarioRequest $request)
     {
+        // return $request->all();
         $created = LocatarioRepository::createLocatario($request);
         return response($created, ($created == 'ok')? 201 : 400);
     }
@@ -44,7 +45,7 @@ class LocatarioController extends Controller
      */
     public function show($id)
     {
-        return Locatario::with(['veiculos', 'convidados', 'user'])->find($id);
+        return Locatario::with(['veiculos', 'convidados', 'apartamento.proprietarios.user'])->find($id);
     }
 
     /**

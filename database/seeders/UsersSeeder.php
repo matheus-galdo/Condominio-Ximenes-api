@@ -17,8 +17,7 @@ class UsersSeeder extends Seeder
         $usersSeeds = [
             ['name' => 'Admin', 'type' => 1, 'email' => 'admin'],
             ['name' => 'Teste', 'type' => 1, 'email' => 'teste'],
-            ['name' => 'Galdino', 'type' => 4, 'email' => 'galdo'],
-            ['name' => 'ablue', 'type' => 2, 'email' => 'ablue'],
+            ['name' => 'Galdino', 'type' => 2, 'email' => 'galdo'],
         ];
 
         foreach ($usersSeeds as $key => $value) {

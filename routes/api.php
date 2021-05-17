@@ -4,6 +4,9 @@ use App\Http\Controllers\ApartamentoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvisosController;
 use App\Http\Controllers\BoletosController;
+use App\Http\Controllers\Chat\ChatSindicaController;
+use App\Http\Controllers\Chat\ContatosChatController;
+use App\Http\Controllers\Chat\MensagensChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentosController;
 use App\Http\Controllers\FileDownloadController;
@@ -11,6 +14,7 @@ use App\Http\Controllers\LocatarioController;
 use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\OcorrenciaController;
 use App\Http\Controllers\ProprietariosController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTypeListingController;
 use App\Http\Controllers\UserTypeController;
@@ -32,6 +36,7 @@ Route::get('/', function (){ return 'homepage'; });
 */
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
+Route::post('novo-proprietario', [RegisterController::class, 'register']);
 // Route::post('change-password', [AuthController::class, 'logout']);
 
 
@@ -78,5 +83,16 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function() {
 
 
     Route::apiResource('boletos', BoletosController::class);
+
+
+    //Chat
+    
+    
+    Route::get('chat-sindica', [ChatSindicaController::class, 'index']);
+    Route::get('chat-sindica/{id}', [ChatSindicaController::class, 'show']);
+    
+    Route::get('contatos-chat-sindica', [ContatosChatController::class, 'chatSindica']);
+    
+    Route::post('chat-sindica-mensagens', [MensagensChatController::class, 'createMessage']);
 
 });

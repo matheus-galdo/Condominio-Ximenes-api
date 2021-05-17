@@ -31,24 +31,25 @@ class CreateLocatarioRequest extends FormRequest
             'dataSaida' => 'required|date|after:start_date',
             'celular' => 'string|required',
             'email' => 'required|email:rfc,dns',
+            'apartamento' => 'required|integer',
             'observacoes' => 'string|present|nullable',
 
             /*-----veiculos-----*/
             'veiculos' => 'present|array',
 
-            'veiculos.*.placa' => 'string',
-            'veiculos.*.modelo' => 'required',
-            'veiculos.*.cor' => 'required',
+            'veiculos.*.placa' => 'required|string',
+            'veiculos.*.modelo' => 'required|string',
+            'veiculos.*.cor' => 'required|string',
 
             
             /*-----convidados-----*/
             'convidados' => 'present|array',
 
-            'convidados.*.nome' => 'required',
-            'convidados.*.cpf' => 'required',
-            'convidados.*.celular' => 'required',
-            'convidados.*.email' => 'required',
-            'convidados.*.observacoes' => 'required'
+            'convidados.*.nomeConvidado' => 'required|string',
+            'convidados.*.cpf' => 'required|string',
+            'convidados.*.crianca' => 'present|nullable',
+            'convidados.*.celular' => 'present|nullable|string',
+            'convidados.*.observacoes' => 'string|present|nullable'
         ];
     }
 

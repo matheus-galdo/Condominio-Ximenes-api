@@ -19,7 +19,14 @@ class ModulosSistemaSeeder extends Seeder
             ['nome'=>'listar-permissoes-user',  'label' => 'Listar permissoes',     'descricao' => '', 'interno' => true],
             ['nome'=>'download-file',           'label' => 'Download Documento',    'descricao' => '', 'interno' => true],
             ['nome'=>'modulos',                 'label' => 'Módulos do sistema',    'descricao' => '', 'interno' => true],
+            
+            
+            ['nome'=>'contatos-chat-sindica',   'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
+            
+            ['nome'=>'chat-sindica-mensagens',   'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
+            ['nome'=>'chat-portaria-contatos',  'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
 
+            
             
             
 
