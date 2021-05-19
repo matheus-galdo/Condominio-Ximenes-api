@@ -105,9 +105,9 @@ class BoletosController extends Controller
      * @param  \App\Models\Boleto  $boleto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Boleto $boleto)
+    public function destroy($boletoId)
     {
-        $response = BoletoRepository::delete($boleto);
+        $response = BoletoRepository::delete($boletoId);
         return response($response, $response['code']);
     }
 }

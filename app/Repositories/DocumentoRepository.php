@@ -2,13 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Apartamento;
-use App\Models\ApartamentosProprietario;
 use App\Models\Documento;
-use App\Models\Proprietario;
-use App\Models\Sistema\UserType;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentoRepository
@@ -63,7 +57,6 @@ class DocumentoRepository
             if (isset($request->ativar)) {
                 if ($request->ativar) {
                     $documento->restore();
-                    $documento->typeName()->restore();
                 } else {
                     $documento->delete();
                 }

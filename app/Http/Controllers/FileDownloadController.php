@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Boleto;
 use App\Models\Documento;
+use App\Models\Ocorrencia\EventoFollowupAnexos;
 use App\Services\PdfParser;
 use App\Services\PdfToStringService;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class FileDownloadController extends Controller
     /**
      * Download the requested file.
      *
-     * @param  \App\Models\Documento  $documento
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function downloadFile(Request $request)
@@ -37,6 +38,10 @@ class FileDownloadController extends Controller
             return $this->downloadBoleto($request) ;
         }
 
+        if ($request->module == 'ocorrencia') {
+            return $this->downloadAnexoOcorrencia($request) ;
+        }
+
 
 
         return response()->json(['error' => 'requested file not found'], 400);
@@ -46,10 +51,10 @@ class FileDownloadController extends Controller
     /**
      * Download the document file.
      *
-     * @param  \App\Models\Documento  $documento
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function downloadDocumento($request)
+    public function downloadDocumento(Request $request)
     {
         $documento = Documento::find($request->file);
         return Storage::download($documento->path, $documento->nome_original, self::DOWNLOAD_FILENAME_HEADER);
@@ -59,11 +64,11 @@ class FileDownloadController extends Controller
     /**
      * Download the PDF file for the resource.
      *
-     * @param  \App\Models\Documento  $documento
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
 
-    public function downloadBoleto($request)
+    public function downloadBoleto(Request $request)
     {
         $user = auth()->user();
         $documento = Boleto::find($request->file);
@@ -76,6 +81,34 @@ class FileDownloadController extends Controller
 
         if(in_array($documento->apartamento_id,$proprietarioApartamentosId)){
             return Storage::download($documento->path, $documento->nome_original, self::DOWNLOAD_FILENAME_HEADER);
+        }
+        
+        return response()->json(['error' => 'você não pode acessar este arquivo'], 400);
+    }
+
+
+    /**
+     * Download the PDF file for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function downloadAnexoOcorrencia(Request $request)
+    {
+        $user = auth()->user();
+        $file = EventoFollowupAnexos::find($request->file);
+
+        if ($user->typeName->is_admin) {
+            return Storage::download($file->path, $file->nome_original, self::DOWNLOAD_FILENAME_HEADER);
+        }
+
+        $proprietarioApartamentosId = $user->proprietario->apartamentos->pluck('id')->toArray();
+
+        // return $proprietarioApartamentosId;
+        return $file->ocorrenciaFollowup->ocorrencia->apartamento;
+        if(in_array($file->ocorrenciaFollowup->ocorrencia->apartamento->id,$proprietarioApartamentosId)){
+            return Storage::download($file->path, $file->nome_original, self::DOWNLOAD_FILENAME_HEADER);
         }
         
         return response()->json(['error' => 'você não pode acessar este arquivo'], 400);

@@ -9,10 +9,12 @@ use App\Http\Controllers\Chat\ContatosChatController;
 use App\Http\Controllers\Chat\MensagensChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentosController;
+use App\Http\Controllers\EventosFollowupListingController;
 use App\Http\Controllers\FileDownloadController;
 use App\Http\Controllers\LocatarioController;
 use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\OcorrenciaController;
+use App\Http\Controllers\OcorrenciaFollowupController;
 use App\Http\Controllers\ProprietariosController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\UserController;
@@ -60,8 +62,10 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function() {
     //Everyone
     Route::get('listar-permissoes-admin', [UserTypeListingController::class, 'listarUsersAdmin']);
     Route::get('listar-permissoes-user', [UserTypeListingController::class, 'listarUsers']);
-
+    Route::get('listar-eventos-ocorrencia', [EventosFollowupListingController::class, 'listarEventosFollowup']);
     Route::get('download-file', [FileDownloadController::class, 'downloadFile']);
+
+
 
     
     //Admin
@@ -75,7 +79,9 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function() {
     //Ambos
     Route::get('dashboard', [DashboardController::class, 'index']);
     Route::apiResource('locatarios', LocatarioController::class);
+
     Route::apiResource('ocorrencias', OcorrenciaController::class);
+    Route::apiResource('ocorrencias-followup', OcorrenciaFollowupController::class, ['except' => ['index']]);
     
     Route::apiResource('avisos', AvisosController::class);
     
@@ -84,7 +90,7 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function() {
 
     Route::apiResource('boletos', BoletosController::class);
 
-
+    
     //Chat
     
     

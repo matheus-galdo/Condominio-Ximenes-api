@@ -2,16 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Apartamento;
-use App\Models\ApartamentosProprietario;
 use App\Models\Boleto;
-use App\Models\Documento;
-use App\Models\Proprietario;
-use App\Models\Sistema\UserType;
-use App\Models\User;
 use App\Services\ReaderBoletoInterService;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class BoletoRepository
@@ -72,7 +65,6 @@ class BoletoRepository
             if (isset($request->ativar)) {
                 if ($boleto->ativar) {
                     $boleto->restore();
-                    $boleto->typeName()->restore();
                 } else {
                     $boleto->delete();
                 }
@@ -101,6 +93,7 @@ class BoletoRepository
     public static function delete($boleto)
     {
         try {
+            $aviso = Boleto::withTrashed()->findOrFail($boleto);
             if ($boleto->trashed()) {
                 $boleto->forceDelete();
             }

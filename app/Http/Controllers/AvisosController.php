@@ -18,7 +18,7 @@ class AvisosController extends Controller
     {
 
         $avisosBuilder = (new Aviso)->newQuery();
-        
+
         if (auth()->user()->typeName->is_admin) {
             $avisosBuilder->withTrashed();
             return response($avisosBuilder->orderBy('deleted_at')->orderBy('titulo')->get());
@@ -35,7 +35,8 @@ class AvisosController extends Controller
      */
     public function store(Request $request)
     {
-        return AvisoRepository::create($request);
+        $response = AvisoRepository::create($request);
+        return response($response, $response['code']);
     }
 
     /**
@@ -44,9 +45,10 @@ class AvisosController extends Controller
      * @param  \App\Models\Aviso  $aviso
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Aviso $aviso)
+    public function show($avisoId)
     {
-        return $aviso;
+        if (auth()->user()->typeName->is_admin) return Aviso::withTrashed()->with('autor')->findOrFail($avisoId);
+        return Aviso::findOrFail($avisoId);
     }
 
     /**
@@ -56,9 +58,10 @@ class AvisosController extends Controller
      * @param  \App\Models\Aviso  $aviso
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Aviso $aviso)
+    public function update(Request $request, $avisoId)
     {
-        //
+        $response = AvisoRepository::update($request, $avisoId);
+        return response($response, $response['code']);
     }
 
     /**
@@ -67,8 +70,9 @@ class AvisosController extends Controller
      * @param  \App\Models\Aviso  $aviso
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Aviso $aviso)
+    public function destroy(Request $request, $avisoId)
     {
-        return $aviso->delete();
+        $response = AvisoRepository::delete($avisoId);
+        return response($response, $response['code']);
     }
 }

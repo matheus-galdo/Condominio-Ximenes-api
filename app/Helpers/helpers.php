@@ -40,7 +40,14 @@ if (!function_exists('clearCpf')) {
 }
 
 
-if (!function_exists('exceptionApi')) {
+if (!function_exists('exceptionApi')) {    
+    /**
+     * exceptionApi
+     *
+     * @param  mixed $exception
+     * @param  mixed $httpStatusCode
+     * @return Exception
+     */
     function exceptionApi(Throwable $exception, $httpStatusCode = 400)
     {
         $debug = env('APP_DEBUG', true);

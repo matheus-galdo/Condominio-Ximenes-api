@@ -2,12 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Apartamento;
-use App\Models\ApartamentosProprietario;
 use App\Models\Chat\ChatSindica;
 use App\Models\Chat\ChatSindicaMensagens;
-use App\Models\Proprietario;
-use App\Models\Sistema\UserType;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 

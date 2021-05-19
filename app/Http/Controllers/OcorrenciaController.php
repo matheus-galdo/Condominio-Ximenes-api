@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ocorrencia;
-use App\Models\OcorrenciaFollowup;
+use App\Models\Ocorrencia\EventoFollowupAnexos;
+use App\Models\Ocorrencia\Ocorrencia;
+use App\Models\Ocorrencia\OcorrenciaFollowup;
+use App\Models\User;
+use App\Repositories\OcorrenciaRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class OcorrenciaController extends Controller
 {
@@ -15,7 +20,17 @@ class OcorrenciaController extends Controller
      */
     public function index()
     {
-        return Ocorrencia::with(['user'])->get();
+        $ocorrenciasBuilder = Ocorrencia::with(['apartamento', 'followup.evento']);
+        if (auth()->user()->typeName->is_admin) {
+            return response($ocorrenciasBuilder->withTrashed()->get());
+        }
+
+        $proprietarioApartamentosIds = auth()->user()->proprietario->apartamentos->pluck('id')->toArray();
+        $ocorrenciasBuilder = $ocorrenciasBuilder->whereHas('apartamento', function ($builder) use ($proprietarioApartamentosIds) {
+            return $builder->whereIn('id', $proprietarioApartamentosIds);
+        });
+
+        return response($ocorrenciasBuilder->get());
     }
 
     /**
@@ -26,27 +41,8 @@ class OcorrenciaController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $ocorrencia = Ocorrencia::create([
-                'assunto' => $request->assunto,
-                'descricao' => $request->descricao,
-                'user_id' => auth()->user()->id,
-            ]);
-
-            OcorrenciaFollowup::create([
-                'descricao' => 'Ocorrência criada',
-                'evento_followup_id' => 1,
-                'ocorrencia_id' => $ocorrencia->id
-            ]);
-
-
-
-            return response(true, 200);
-
-        } catch (\Throwable $th) {
-            throw $th;
-            return response(['error'=> $th], 400);
-        }
+        $response = OcorrenciaRepository::create($request);
+        return response($response, $response['code']);
     }
 
     /**
@@ -57,7 +53,18 @@ class OcorrenciaController extends Controller
      */
     public function show($id)
     {
-        return Ocorrencia::with(['followup'])->find($id);
+        $builder = Ocorrencia::with(['apartamento', 'autor.typeName']);
+
+        if (auth()->user()->typeName->is_admin) {
+            $ocorrencia = $builder->withTrashed()->with([
+                'followup' => function ($innerBuilder) {
+                    $innerBuilder->withTrashed()->with(['anexos', 'evento']);
+                }
+            ])->findOrFail($id);
+            return response()->json($ocorrencia);
+        }
+
+        return $builder->with(['followup.anexos', 'followup.evento'])->findOrFail($id);
     }
 
     /**
@@ -69,7 +76,8 @@ class OcorrenciaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $response = OcorrenciaRepository::update($request, $id);
+        return response($response, $response['code']);
     }
 
     /**
@@ -80,6 +88,8 @@ class OcorrenciaController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $ocorrencia = Ocorrencia::withTrashed()->find($id);
+        $response = OcorrenciaRepository::delete($ocorrencia);
+        return response($response, $response['code']); 
     }
 }

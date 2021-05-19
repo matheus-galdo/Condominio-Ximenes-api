@@ -77,8 +77,7 @@ class ApartamentoController extends Controller
      */
     public function destroy($apartamentoId)
     {
-        $apartamento = Apartamento::withTrashed()->find($apartamentoId);
-        $response = ApartamentoRepository::delete($apartamento);
+        $response = ApartamentoRepository::delete($apartamentoId);
         return response($response, $response['code']);
     }
 }

@@ -14,7 +14,13 @@ class Aviso extends Model
         'titulo',
         'descricao',
         'user_id',
-        'data_expiracao'
+        'data_expiracao',
+        'deleted_at'
     ];
+
+    public function autor()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
 }

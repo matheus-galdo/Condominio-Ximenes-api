@@ -21,7 +21,6 @@ class DocumentosController extends Controller
      */
     public function index()
     {
-        // DB::enableQueryLog();
         if (auth()->user()->typeName->is_admin) {
             return response(DocumentoResource::collection(Documento::withTrashed()->get()));
         }

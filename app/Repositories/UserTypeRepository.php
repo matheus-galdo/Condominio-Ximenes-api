@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Sistema\Modulos;
-use App\Models\Sistema\Permissoes;
 use App\Models\Sistema\UserType;
 use Illuminate\Support\Facades\DB;
 

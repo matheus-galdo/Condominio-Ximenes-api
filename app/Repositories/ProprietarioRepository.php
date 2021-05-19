@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Apartamento;
-use App\Models\ApartamentosProprietario;
 use App\Models\Proprietario;
 use App\Models\Sistema\UserType;
 use App\Models\User;

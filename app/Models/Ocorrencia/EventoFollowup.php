@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Ocorrencia;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,13 @@ class EventoFollowup extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nome'
+        'nome',
+        'cor',
     ];
+
+    public function ocorrenciaFollowup()
+    {
+        return $this->hasMany(OcorrenciaFollowup::class);
+    }
+
 }

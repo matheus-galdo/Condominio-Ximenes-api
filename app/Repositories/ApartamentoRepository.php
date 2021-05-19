@@ -72,9 +72,10 @@ class ApartamentoRepository
         }
     }
 
-    public static function delete($apartamento)
+    public static function delete($id)
     {
         try {
+            $apartamento = Apartamento::withTrashed()->find($id);
             if ($apartamento->trashed()) {
                 $apartamento->forceDelete();
             }

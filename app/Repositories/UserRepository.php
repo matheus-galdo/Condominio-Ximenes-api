@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Apartamento;
 use App\Models\Sistema\UserType;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
