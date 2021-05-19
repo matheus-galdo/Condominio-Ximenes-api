@@ -30,7 +30,8 @@ class OcorrenciaFollowupController extends Controller
     public function store(Request $request)
     {
         $response = OcorrenciaFollowupRepository::create($request);
-        return response($response, $response['code']);        
+        // return response($response, $response['code']);        
+        return response($response, 400);        
     }
 
     /**

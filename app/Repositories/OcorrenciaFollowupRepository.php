@@ -21,16 +21,29 @@ class OcorrenciaFollowupRepository
      */
     public static function create($request)
     {
+        $followup_final = ['Concluída', 'Cancelada'];
+
         try {
             try {
                 $fileAnexo = collect();
-                DB::transaction(function () use ($request, $fileAnexo) {
+
+                $a = DB::transaction(function () use ($request, $fileAnexo, $followup_final) {
+
+                    $ocorrencia = Ocorrencia::withTrashed()->findOrFail($request->ocorrencia);
+                    $lastFollowup = $ocorrencia->followup->last();
 
                     $followup = OcorrenciaFollowup::create([
                         'descricao' => $request->descricao,
                         'evento_followup_id' => $request->evento,
                         'ocorrencia_id' => $request->ocorrencia
                     ]);
+
+                    if (!empty($lastFollowup)) {
+                        if (in_array($lastFollowup->evento->nome, $followup_final) && $followup->evento->nome != 'Reaberta') {
+                            $followup->delete();
+                            throw new \Exception("Esta ocorrência foi encerrada e não pode receber este followup", 1);
+                        }
+                    }
 
                     if (isset($request->arquivos)) {
                         foreach ($request->arquivos as $file) {
@@ -54,7 +67,7 @@ class OcorrenciaFollowupRepository
                 throw $th;
             }
 
-            return ['status' => true, 'code' => 201];
+            return ['status' => true, 'a' => $a, 'code' => 201];
         } catch (\Throwable $th) {
             return exceptionApi($th, 400);
         }

@@ -14,16 +14,10 @@ class Ocorrencia extends Model
 
     protected $fillable = [
         'assunto',
-        'concluida',
         'autor_id',
         'apartamento_id',
         'deleted_at'
     ];
-
-    public $casts = [
-        'concluida' => 'boolean'
-    ];
-
 
     public function apartamento()
     {

@@ -42,10 +42,12 @@ class OcorrenciaRepository
                 $request->evento = 1;
                 $request->ocorrencia = $ocorrencia->id;
 
-                OcorrenciaFollowupRepository::create($request);
+                $r = OcorrenciaFollowupRepository::create($request);
+
+                if (isset($r['error'])) {
+                    throw new \Exception($r['exception'] ? $r['exception'] : 'Internal repository error', 1);
+                }
             });
-
-
 
             return ['status' => true, 'code' => 201];
         } catch (\Throwable $th) {
@@ -66,36 +68,15 @@ class OcorrenciaRepository
         try {
             $ocorrencia = Ocorrencia::withTrashed()->findOrFail($id);
 
-            $t = DB::transaction(function () use ($ocorrencia, $request) {
-
-                if (isset($request->ativar)) {
-                    if ($request->ativar) {
-                        $ocorrencia->restore();
-                    } else {
-                        $ocorrencia->delete();
-                    }
-
-                } else if (isset($request->encerrar)) {
-
-                    $request->ocorrencia = $ocorrencia->id;
-
-                    if ($request->encerrar) {
-                        $ocorrencia->update(['concluida' => true]);
-                        
-                        $request->evento = EventoFollowup::where('nome', 'Concluída')->first()->id;
-                        $request->descricao = 'Ocorrência encerrada';
-                        return OcorrenciaFollowupRepository::create($request);
-                    } else {
-                        $ocorrencia->update(['concluida' => false]);
-                        
-                        $request->evento = EventoFollowup::where('nome', 'Reaberta')->first()->id;
-                        $request->descricao = 'Ocorrência reaberta';
-                        return OcorrenciaFollowupRepository::create($request);
-                    }
+            if (isset($request->ativar)) {
+                if ($request->ativar) {
+                    $ocorrencia->restore();
+                } else {
+                    $ocorrencia->delete();
                 }
-            });
+            }
 
-            return ['status' => $t, 'code' => 200];
+            return ['status' => true, 'code' => 200];
         } catch (\Throwable $th) {
             return exceptionApi($th, 400);
         }

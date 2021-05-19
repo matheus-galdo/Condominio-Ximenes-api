@@ -40,7 +40,7 @@ if (!function_exists('clearCpf')) {
 }
 
 
-if (!function_exists('exceptionApi')) {    
+if (!function_exists('exceptionApi')) {
     /**
      * exceptionApi
      *
@@ -53,18 +53,25 @@ if (!function_exists('exceptionApi')) {
         $debug = env('APP_DEBUG', true);
 
         if ($exception instanceof Throwable) {
-            
+
             if ($debug) {
-                return ['error' => [
-                    'message' => $exception->getMessage(),
-                    'code' => $exception->getCode(),
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                    'trace' => $exception->getTrace()
-                ], 'code' => $httpStatusCode];
+                return [
+                    'error' => [
+                        'message' => $exception->getMessage(),
+                        'code' => $exception->getCode(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => $exception->getTrace()
+                    ],
+                    'code' => $httpStatusCode,
+                    'exception' => $exception
+                ];
             }
 
-            return ['error' => $exception->getMessage(), 'code' => $httpStatusCode];
+            return [
+                'error' => $exception->getMessage(),
+                'code' => $httpStatusCode
+            ];
         }
     }
 }

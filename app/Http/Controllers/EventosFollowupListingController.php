@@ -14,9 +14,6 @@ class EventosFollowupListingController extends Controller
      */
     public function listarEventosFollowup(Request $request)
     {
-        if (auth()->user()->typeName->is_admin) {
-            return response(EventoFollowup::all());
-        }
+        return response(EventoFollowup::all());
     }
-
 }
