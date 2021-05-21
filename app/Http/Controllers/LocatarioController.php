@@ -33,8 +33,8 @@ class LocatarioController extends Controller
     public function store(CreateLocatarioRequest $request)
     {
         // return $request->all();
-        $created = LocatarioRepository::createLocatario($request);
-        return response($created, ($created == 'ok')? 201 : 400);
+        $response = LocatarioRepository::createLocatario($request);
+        return response($response, $response['code']);
     }
 
     /**

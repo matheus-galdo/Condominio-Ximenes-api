@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Mail\LocatarioCadastrado;
 use App\Models\Locatario;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class LocatarioRepository
 {
@@ -12,33 +15,48 @@ class LocatarioRepository
     {
 
         try {
-            $user = User::find(auth()->user()->id);
-            $hasVeiculos = (count($request->veiculos) > 0);
-            $hasConvidados = (count($request->convidados) > 0);
+            
+           DB::transaction(function () use($request) {
+                
+                $user = User::find(auth()->user()->id);
 
-            $locatario = Locatario::create([
-                'nome' => $request->nomeLocatario,
-                'cpf' => clearCpf($request->cpf),
-                'data_chegada' => $request->dataChegada,
-                'data_saida' => $request->dataSaida,
-                'celular' => $request->celular,
-                'email' => $request->email,
-                'observacoes' => $request->observacoes,
-                'possui_veiculos' => $hasVeiculos,
-                'possui_convidados' => $hasConvidados,
-                'apartamento_id' => $request->apartamento
-            ]);
+                if (!$user->typeName->is_admin) {
+                    $aps = $user->proprietario->apartamentos->firstWhere('id', $request->apartamento);
+                    if (empty($aps)) throw new \Exception("Recursos solicidado não permitido", 1);
+                }
+
+                $hasConvidados = (count($request->convidados) > 0);
+                $hasVeiculos = (count($request->veiculos) > 0);
+
+                $locatario = Locatario::create([
+                    'nome' => $request->nomeLocatario,
+                    'cpf' => clearCpf($request->cpf),
+                    'data_chegada' => $request->dataChegada,
+                    'data_saida' => $request->dataSaida,
+                    'celular' => $request->celular,
+                    'email' => $request->email,
+                    'observacoes' => $request->observacoes,
+                    'possui_veiculos' => $hasVeiculos,
+                    'possui_convidados' => $hasConvidados,
+                    'apartamento_id' => $request->apartamento
+                ]);
 
 
-            foreach ($request->veiculos as $veiculo) {
-                LocatarioVeiculoRepository::create($veiculo, $locatario);
-            }
+                foreach ($request->veiculos as $veiculo) {
+                    LocatarioVeiculoRepository::create($veiculo, $locatario);
+                }
 
-            foreach ($request->convidados as $convidado) {
-                LocatarioConvidadoRepository::create($convidado, $locatario);
-            }
+                foreach ($request->convidados as $convidado) {
+                    LocatarioConvidadoRepository::create($convidado, $locatario);
+                }
 
-            return 'ok';
+                // $mail = new LocatarioCadastrado();
+                // Mailer::send($mail);
+                Mail::send(new LocatarioCadastrado($locatario));
+            });
+
+
+            return ['status' => true,  'code' => 201];
         } catch (\Throwable $th) {
             return exceptionApi($th, 400);
         }

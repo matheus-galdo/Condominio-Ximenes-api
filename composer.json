@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.5",
         "lucascudo/laravel-pt-br-localization": "^1.1",
         "mpdf/mpdf": "^8.0",
+        "phpmailer/phpmailer": "^6.4",
         "smalot/pdfparser": "^1.0",
         "tymon/jwt-auth": "1.0.2"
     },

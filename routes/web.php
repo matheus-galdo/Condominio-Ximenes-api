@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+// Route::get('/{any}', function ($any) {
+
+//     return redirect()
+  
+//   })->where('any', '.*');
+
+
 Route::get('/', function () {
     return view('welcome');
 });

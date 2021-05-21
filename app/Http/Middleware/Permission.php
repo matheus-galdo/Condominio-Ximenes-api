@@ -27,6 +27,7 @@ class Permission
      */
     public function handle(Request $request, Closure $next)
     {
+
         $user = auth()->userOrFail();
         $operation = self::RESOURCE_OPERATIONS[strtoupper($request->method())];
 

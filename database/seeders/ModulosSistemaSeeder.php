@@ -15,9 +15,10 @@ class ModulosSistemaSeeder extends Seeder
     public function run()
     {
         $modulos = [
-            ['nome' => 'listar-permissoes-admin', 'label' => 'Listar permissoes',     'descricao' => '', 'interno' => true],
-            ['nome' => 'listar-permissoes-user',  'label' => 'Listar permissoes',     'descricao' => '', 'interno' => true],
-            ['nome' => 'listar-eventos-ocorrencia',  'label' => 'Listar eventos',     'descricao' => '', 'interno' => true],
+            ['nome' => 'listar-permissoes-admin',    'label' => 'Listar permissoes',     'descricao' => '', 'interno' => true],
+            ['nome' => 'listar-permissoes-user',     'label' => 'Listar permissoes',     'descricao' => '', 'interno' => true],
+            ['nome' => 'listar-eventos-ocorrencia',  'label' => 'Listar eventos',        'descricao' => '', 'interno' => true],
+            ['nome' => 'listar-apartamentos',        'label' => 'Listar aps',        'descricao' => '', 'interno' => true],
             
             ['nome' => 'download-file',           'label' => 'Download Documento',    'descricao' => '', 'interno' => true],
             ['nome' => 'modulos',                 'label' => 'Módulos do sistema',    'descricao' => '', 'interno' => true],

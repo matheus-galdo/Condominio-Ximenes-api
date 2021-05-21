@@ -32,18 +32,7 @@ class BoletosController extends Controller
         if (auth()->user()->typeName->is_admin) {
             return response(BoletoResource::collection($boletosBuilder->withTrashed()->get()));
         }
-
-        // $user = auth()->user();
-        // $proprietario = Proprietario::where('user_id', $user->id)->with('apartamentos.boletos')->firstOrFail();
-        // $boletos = collect();
-        // foreach($proprietario->apartamentos as $apartamento){
-        //     foreach($apartamento->boletos as $boleto){
-        //         $boletos->push($boleto);
-        //     };
-        // };
-        // return response($boletos);
-        // return response(BoletoResource::collection(auth()->user()->proprietario->apartamentos->boletos));
-
+        
         $proprietarioApartamentosIds = auth()->user()->proprietario->apartamentos->pluck('id')->toArray();
 
         $boletosBuilder = $boletosBuilder->whereHas('apartamento', function ($builder) use ($proprietarioApartamentosIds) {

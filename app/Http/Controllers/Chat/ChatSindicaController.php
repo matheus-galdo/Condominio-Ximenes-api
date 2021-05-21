@@ -25,10 +25,18 @@ class ChatSindicaController extends Controller
         $user = auth()->user();
 
         if ($user->typeName->is_admin) {
-            $proprietarios = ChatProprietariosResourceWithChat::collection(Proprietario::has('chatSindica')->with(['apartamentos', 'user', 'chatSindica'])->get());
-            $proprietariosWithoutChat = ChatProprietariosResource::collection(Proprietario::doesntHave('chatSindica')->with(['apartamentos', 'user'])->get());
+            $proprietarios = ChatProprietariosResourceWithChat::collection(Proprietario::has('chatSindica')
+                ->with(['apartamentos', 'user', 'chatSindica'])->whereHas('user', function ($builder) {
+                    $builder->where('users.deleted_at', null);
+                })->get());
+
+            $proprietariosWithoutChat = ChatProprietariosResource::collection(Proprietario::doesntHave('chatSindica')
+                ->with(['apartamentos', 'user'])->whereHas('user', function ($builder) {
+                    $builder->where('users.deleted_at', null);
+                })->get());
+
             $proprietarios = $proprietarios->merge($proprietariosWithoutChat);
-            
+
             return response()->json($proprietarios);
         }
 
@@ -74,10 +82,10 @@ class ChatSindicaController extends Controller
             return response()->json(["status" => "You don't have permission to access this resource"], 403);
         }
 
-        if(empty($userChat)){
+        if (empty($userChat)) {
             return response()->json([]);
         }
-        	
+
         return response()->json(ChatMensagensResource::collection($userChat->mensagens));
     }
 

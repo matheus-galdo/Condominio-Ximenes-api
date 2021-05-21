@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Ocorrencias\CreateOcorrenciaRequest;
+use App\Http\Requests\Ocorrencias\UpdateOcorrenciaRequest;
 use App\Models\Ocorrencia\EventoFollowupAnexos;
 use App\Models\Ocorrencia\Ocorrencia;
 use App\Models\Ocorrencia\OcorrenciaFollowup;
@@ -39,8 +41,10 @@ class OcorrenciaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateOcorrenciaRequest $request)
     {
+        // exists:App\Models\Ocorrencia\Ocorrencia,id
+
         $response = OcorrenciaRepository::create($request);
         return response($response, $response['code']);
     }
@@ -74,7 +78,7 @@ class OcorrenciaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOcorrenciaRequest $request, $id)
     {
         $response = OcorrenciaRepository::update($request, $id);
         return response($response, $response['code']);

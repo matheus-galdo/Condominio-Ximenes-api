@@ -20,15 +20,18 @@ class ProprietariosController extends Controller
      */
     public function index(Request $request)
     {
-        $order = 'nao_aprovados';
+        $filter = (isset($request->filter)) ? $request->filter : 'nome';
 
-        $orderByOptions = [
-            'nao_aprovados' => ['proprietarios.aprovado'],
-            'aprovados' => ['proprietarios.aprovado', 'DESC'],
-            'data_criacao' => ['users.created_at', 'ASC'],
-            'data_criacao_desc' => ['users.created_at', 'DESC'],
-            'deletados' => ['proprietarios.deleted_at'],
+        $filterOptions = [
+            'nao_aprovados' =>              ['rule' => ['proprietarios.aprovado', false],    'clause' => 'where'],
+            'aprovados' =>                  ['rule' => ['proprietarios.aprovado', true],     'clause' => 'where'],
+            'data_cadastro_recentes' =>     ['rule' => ['users.created_at', 'DESC'],         'clause' => 'orderBy'],
+            'data_cadastro_antigas' =>      ['rule' => ['users.created_at', 'ASC'],          'clause' => 'orderBy'],
+            'nome' =>                       ['rule' => ['users.name', 'ASC'],                'clause' => 'orderBy'],
+            'desativado' =>                 ['rule' => ['users.deleted_at', '!=', null],     'clause' => 'where'],
+            'ativado' =>                    ['rule' => ['users.deleted_at', '==', null],     'clause' => 'where'],
         ];
+
 
         $builder = User::with([
             'typeName' => function ($builder) {
@@ -37,10 +40,17 @@ class ProprietariosController extends Controller
         ])
             ->join('proprietarios', 'users.id', '=', 'proprietarios.user_id')
             ->addSelect('*', 'proprietarios.id as proprietario_id', 'users.id as id')
-            ->orderBy(...$orderByOptions[$order])
             ->withTrashed();
 
-        if ($request->page) return response($builder->paginate(15));
+        if (isset($request->filter) && $request->filter != 'todos') {
+            if ($filterOptions[$filter]['clause'] == 'where') {
+                $builder = $builder->where(...$filterOptions[$filter]['rule']);
+            } else if ($filterOptions[$filter]['clause'] == 'orderBy') {
+                $builder = $builder->orderBy(...$filterOptions[$filter]['rule']);
+            }
+        }
+
+        if ($request->page) return response($builder->paginate(5, $request->page));
         return response($builder->get());
     }
 

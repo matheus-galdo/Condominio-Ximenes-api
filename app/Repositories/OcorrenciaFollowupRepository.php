@@ -31,7 +31,7 @@ class OcorrenciaFollowupRepository
 
                     $ocorrencia = Ocorrencia::withTrashed()->findOrFail($request->ocorrencia);
                     $lastFollowup = $ocorrencia->followup->last();
-
+                    
                     $followup = OcorrenciaFollowup::create([
                         'descricao' => $request->descricao,
                         'evento_followup_id' => $request->evento,
@@ -93,10 +93,11 @@ class OcorrenciaFollowupRepository
                     $followup->delete();
                 }
             } else {
-                $followup->nome = $request->nome_arquivo;
-                $followup->is_public = $request->publico;
-                $followup->data_expiracao = $request->data_expiracao;
-                $followup->save();
+
+                $followup->update([
+                    'descricao' => $request->descricao,
+                    'ocorrencia_id' => $request->ocorrencia
+                ]);
             }
 
             return ['status' => true, 'code' => 200];

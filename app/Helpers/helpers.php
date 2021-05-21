@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Sistema\UserType;
+use Carbon\Carbon;
 
 if (!function_exists('isAuthorized')) {
     /**
@@ -29,6 +30,29 @@ if (!function_exists('isAuthorized')) {
         return ($userType == $typesOfuser->firstWhere('nome', $authorizedTypes)->id);
     }
 }
+
+
+// const TRANSLATED_MONTHS_SHORT = [
+//     'Jan' => 'Jan',
+//     'Feb' => 'Fev',
+//     'Mar' => 'Mar',
+//     'Apr' => 'Abr',
+//     'May' => 'Mai',
+//     'Jun' => 'Jun',
+//     'Jul' => 'Jul',
+//     'Aug' => 'Ago',
+//     'Sep' => 'Set',
+//     'Oct' => 'Out',
+//     'Nov' => 'Nov',
+//     'Dec' => 'Dez',
+// ];
+
+// if (!function_exists('translateDate')) {
+//     function translateDate($date)
+//     {
+//         $date
+//     }
+// }
 
 
 if (!function_exists('clearCpf')) {

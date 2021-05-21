@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Ocorrencias\CreateOcorrenciaFollowupRequest;
+use App\Http\Requests\Ocorrencias\UpdateOcorrenciaFollowupRequest;
 use App\Models\Ocorrencia\OcorrenciaFollowup;
 use App\Repositories\OcorrenciaFollowupRepository;
 use Illuminate\Http\Request;
@@ -27,11 +29,10 @@ class OcorrenciaFollowupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateOcorrenciaFollowupRequest $request)
     {
         $response = OcorrenciaFollowupRepository::create($request);
-        // return response($response, $response['code']);        
-        return response($response, 400);        
+        return response($response, $response['code']);        
     }
 
     /**
@@ -41,7 +42,7 @@ class OcorrenciaFollowupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOcorrenciaFollowupRequest $request, $id)
     {
         $response = OcorrenciaFollowupRepository::update($request, $id);
         return response($response, $response['code']); 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Ocorrencia\Ocorrencia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,5 +29,10 @@ class Apartamento extends Model
     public function boletos()
     {
         return $this->hasMany(Boleto::class);
+    }
+
+    public function ocorrencias()
+    {
+        return $this->hasMany(Ocorrencia::class);
     }
 }

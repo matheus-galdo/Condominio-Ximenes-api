@@ -43,6 +43,7 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'auth_mode' => null,
+            'mailer_debug' => env('MAIL_DEBUG', false),
         ],
 
         'ses' => [
