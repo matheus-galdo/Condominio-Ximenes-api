@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentosController;
 use App\Http\Controllers\EventosFollowupListingController;
 use App\Http\Controllers\FileDownloadController;
+use App\Http\Controllers\HorariosFuncionamentoController;
 use App\Http\Controllers\LocatarioController;
 use App\Http\Controllers\ModulosController;
 use App\Http\Controllers\OcorrenciaController;
@@ -75,16 +76,12 @@ Route::get('file-teste', function () {
 
 Route::group(['middleware' => ['apiJwt', 'permission']], function () {
 
-    //Everyone
-    Route::get('listar-permissoes-admin', [UserTypeListingController::class, 'listarUsersAdmin']);
-    Route::get('listar-permissoes-user', [UserTypeListingController::class, 'listarUsers']);
-    Route::get('listar-eventos-ocorrencia', [EventosFollowupListingController::class, 'listarEventosFollowup']);
-    Route::get('listar-apartamentos', [ApartamentoController::class, 'index']);
-    Route::get('download-file', [FileDownloadController::class, 'downloadFile']);
-
-
-
-
+    //Everyone - interno do sistema
+    Route::get('listar-permissoes-admin', [UserTypeListingController::class, 'listarUsersAdmin']);               #ok
+    Route::get('listar-permissoes-user', [UserTypeListingController::class, 'listarUsers']);                     #ok
+    Route::get('listar-eventos-ocorrencia', [EventosFollowupListingController::class, 'listarEventosFollowup']); #ok
+    Route::get('listar-apartamentos', [ApartamentoController::class, 'index']);                                  #ok
+    Route::get('download-file', [FileDownloadController::class, 'downloadFile']);                                #ok
 
 
     //Admin
@@ -102,28 +99,28 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function () {
     Route::apiResource('documentos', DocumentosController::class);          # ok
     Route::apiResource('boletos', BoletosController::class);                # ok
 
+
     //ocorrencias
     Route::apiResource('ocorrencias', OcorrenciaController::class);         # ok
     Route::apiResource('ocorrencias-followup', OcorrenciaFollowupController::class, ['except' => ['index']]);  # ok
 
-    Route::apiResource('prestacao-contas', ContasController::class);        # ok
-
-
-    //informações básicas
-    Route::get('regras-normas', [RegrasNormasController::class, 'index']);
-    Route::patch('regras-normas', [RegrasNormasController::class, 'update']);
-
-    Route::get('contatos', [ContatosController::class, 'index']);
-    Route::patch('contatos', [ContatosController::class, 'update']);
-
-
-    Route::get('funcionamento', [HorariosFuncionamentoController::class, 'index']);
-    Route::patch('funcionamento', [HorariosFuncionamentoController::class, 'update']);    
-
-
+    Route::apiResource('prestacao-contas', ContasController::class);        
+    
+    
     //Chat
     Route::get('chat-sindica', [ChatSindicaController::class, 'index']);
     Route::get('chat-sindica/{id}', [ChatSindicaController::class, 'show']);
     Route::get('contatos-chat-sindica', [ContatosChatController::class, 'chatSindica']);
     Route::post('chat-sindica-mensagens', [MensagensChatController::class, 'createMessage']);
+
+
+    //informações básicas
+    Route::get('regras-normas', [RegrasNormasController::class, 'index']);              #ok
+    Route::patch('regras-normas', [RegrasNormasController::class, 'update']);           #ok
+
+    Route::get('contatos', [ContatosController::class, 'index']);                       #ok
+    Route::patch('contatos', [ContatosController::class, 'update']);                    #ok
+
+    Route::get('funcionamento', [HorariosFuncionamentoController::class, 'index']);     #ok
+    Route::patch('funcionamento', [HorariosFuncionamentoController::class, 'update']);  #ok 
 });

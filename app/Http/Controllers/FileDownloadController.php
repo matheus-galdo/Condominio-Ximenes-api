@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Boleto;
 use App\Models\Documento;
 use App\Models\Ocorrencia\EventoFollowupAnexos;
+use App\Models\PrestacaoContas\ArquivoConta;
 use App\Services\PdfParser;
 use App\Services\PdfToStringService;
 use Illuminate\Http\Request;
@@ -42,6 +43,9 @@ class FileDownloadController extends Controller
             return $this->downloadAnexoOcorrencia($request) ;
         }
 
+        if ($request->module == 'contas') {
+            return $this->downloadPrestacaoContas($request) ;
+        }
 
 
         return response()->json(['error' => 'requested file not found'], 400);
@@ -55,9 +59,18 @@ class FileDownloadController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function downloadDocumento(Request $request)
-    {
-        $documento = Documento::find($request->file);
-        return Storage::download($documento->path, $documento->nome_original, self::DOWNLOAD_FILENAME_HEADER);
+    {        
+        $user = auth()->user();
+        $builder = new Documento;
+        $builder = $builder->newQuery();
+        
+        if ($user->typeName->is_admin) {
+            $file = $builder->withTrashed()->findOrFail($request->file);
+        }else{
+            $file = $builder->findOrFail($request->file);
+        }
+        
+        return Storage::download($file->path, $file->nome_original, self::DOWNLOAD_FILENAME_HEADER);
     }
 
 
@@ -112,5 +125,28 @@ class FileDownloadController extends Controller
         }
         
         return response()->json(['error' => 'você não pode acessar este arquivo'], 400);
+    }
+
+
+        /**
+     * Download the PDF file for the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+
+    public function downloadPrestacaoContas(Request $request)
+    {
+        $user = auth()->user();
+        $builder = new ArquivoConta;
+        $builder = $builder->newQuery();
+        
+        if ($user->typeName->is_admin) {
+            $file = $builder->withTrashed()->findOrFail($request->file);
+        }else{
+            $file = $builder->findOrFail($request->file);
+        }
+
+        return Storage::download($file->path, $file->nome, self::DOWNLOAD_FILENAME_HEADER);
     }
 }

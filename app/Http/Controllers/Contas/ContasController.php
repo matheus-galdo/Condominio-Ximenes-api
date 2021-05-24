@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Contas;
 
 use App\Http\Controllers\Controller;
+use App\Models\PrestacaoContas\ArquivoConta;
 use App\Repositories\ContasRepository;
+use App\Repositories\PrestacaoContasRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use SebastianBergmann\Type\TypeName;
 use Smalot\PdfParser\Parser;
 
 class ContasController extends Controller
@@ -16,7 +20,14 @@ class ContasController extends Controller
      */
     public function index()
     {
-        //listas todas as contas existentes
+        $builder = new ArquivoConta();
+        $builder = $builder->newQuery();
+
+        if (auth()->user()->typeName->is_admin) {
+            $builder->withTrashed();
+        }
+
+        return $builder->get();
         
     }
 
@@ -28,21 +39,8 @@ class ContasController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        $parser = new Parser();
-        $filePath = $request->arquivos->store('userFiles/pretacao_contas');
-        $pdf    = $parser->parseFile(storage_path('app/' . $filePath));
-        
-        $text = $pdf->getText();
-        return response()->json(['content' => $text]);
-
-        return $text;
-
-        
-        $response = ContasRepository::create($request);
-        return response()->json(['content' => $response]);
-        // return response($response, $response['code']);
+        $response = PrestacaoContasRepository::create($request);
+        return response($response, $response['code']);
     }
 
     /**
@@ -51,9 +49,11 @@ class ContasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($contaId)
     {
-        //
+        $conta = ArquivoConta::withTrashed()->findOrFail($contaId);
+        $conta->setAttribute('size', Storage::size($conta->path));
+        return $conta;
     }
 
     /**
@@ -63,9 +63,10 @@ class ContasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $contaId)
     {
-        //
+        $response = PrestacaoContasRepository::update($request, $contaId);
+        return response($response, $response['code']);
     }
 
     /**
@@ -74,8 +75,10 @@ class ContasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($contaId)
     {
-        //
+        $documento = ArquivoConta::withTrashed()->findOrFail($contaId);
+        $response = PrestacaoContasRepository::delete($documento);
+        return response($response, $response['code']);
     }
 }

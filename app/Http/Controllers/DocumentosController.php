@@ -51,8 +51,9 @@ class DocumentosController extends Controller
      * @param  \App\Models\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function show(Documento $documento)
+    public function show($documentoId)
     {
+        $documento = Documento::withTrashed()->findOrFail($documentoId);
         $documento->setAttribute('size', Storage::size($documento->path));
         return $documento;
     }
@@ -76,8 +77,9 @@ class DocumentosController extends Controller
      * @param  \App\Models\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Documento $documento)
+    public function destroy($documentoId)
     {
+        $documento = Documento::withTrashed()->findOrFail($documentoId);
         $response = DocumentoRepository::delete($documento);
         return response($response, $response['code']);
     }
