@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             PermissoesSeeder::class,
             ApartamentosSeeder::class,
             ProprietariosSeeder::class,
+            ModulosTextosSeeder::class
         ]);
 
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Sistema;
 
+use App\Models\ModuloTexto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,5 +29,10 @@ class Modulos extends Model
     public function scopeAcessableModulos($builder)
     {
         return $builder->where('interno', false);
+    }
+
+    public function moduloTexto()
+    {
+        return $this->hasMany(ModuloTexto::class, 'modulo_sistema_id');
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Chat\ChatSindicaController;
 use App\Http\Controllers\Chat\ContatosChatController;
 use App\Http\Controllers\Chat\MensagensChatController;
 use App\Http\Controllers\Contas\ContasController;
+use App\Http\Controllers\ContatosController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentosController;
 use App\Http\Controllers\EventosFollowupListingController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\OcorrenciaController;
 use App\Http\Controllers\OcorrenciaFollowupController;
 use App\Http\Controllers\ProprietariosController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RegrasNormasController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTypeListingController;
 use App\Http\Controllers\UserTypeController;
@@ -105,6 +107,18 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function () {
     Route::apiResource('ocorrencias-followup', OcorrenciaFollowupController::class, ['except' => ['index']]);  # ok
 
     Route::apiResource('prestacao-contas', ContasController::class);        # ok
+
+
+    //informações básicas
+    Route::get('regras-normas', [RegrasNormasController::class, 'index']);
+    Route::patch('regras-normas', [RegrasNormasController::class, 'update']);
+
+    Route::get('contatos', [ContatosController::class, 'index']);
+    Route::patch('contatos', [ContatosController::class, 'update']);
+
+
+    Route::get('funcionamento', [HorariosFuncionamentoController::class, 'index']);
+    Route::patch('funcionamento', [HorariosFuncionamentoController::class, 'update']);    
 
 
     //Chat
