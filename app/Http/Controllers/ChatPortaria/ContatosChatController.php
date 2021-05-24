@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Chat;
+namespace App\Http\Controllers\ChatPortaria;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Chat\ChatProprietariosResource;

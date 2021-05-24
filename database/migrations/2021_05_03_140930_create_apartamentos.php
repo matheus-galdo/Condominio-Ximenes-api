@@ -18,6 +18,7 @@ class CreateApartamentos extends Migration
             $table->string('bloco');
             $table->integer('numero')->unique();
             $table->string('andar');
+            $table->timestamps();
             $table->softDeletes();
         });
     }

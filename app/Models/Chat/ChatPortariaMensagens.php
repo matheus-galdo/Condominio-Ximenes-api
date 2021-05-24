@@ -6,13 +6,13 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ChatSindicaMensagens extends Model
+class ChatPortariaMensagens extends Model
 {
     use HasFactory;
 
     public $fillable = [
         'autor_mensagem',
-        'chat_sindica_id',
+        'chat_portaria_id',
         'mensagem',
         'mensagem_admin',
         'anexo',
@@ -21,9 +21,9 @@ class ChatSindicaMensagens extends Model
         'nome_original'
     ];
 
-    public function chatSindica()
+    public function chatPortaria()
     {
-        return $this->belongsTo(ChatSindica::class);
+        return $this->belongsTo(ChatPortaria::class);
     }
 
     public function autor()

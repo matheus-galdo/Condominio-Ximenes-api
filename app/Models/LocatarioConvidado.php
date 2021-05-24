@@ -20,6 +20,9 @@ class LocatarioConvidado extends Model
         'locatario_id'
     ];
 
+    public $casts = [
+        'crianca' => 'boolean'
+    ];
 
     public function locatario()
     {

@@ -24,6 +24,8 @@ class ChatMensagensResource extends JsonResource
             'mensagem_admin' => $this->mensagem_admin,
             'anexo' => $this->anexo,
             'tipo_anexo' => $this->tipo_anexo,
+            'extensao' => $this->extensao,
+            'nome_original' => $this->nome_original,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             

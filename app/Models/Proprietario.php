@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Chat\ChatPortaria;
 use App\Models\Chat\ChatSindica;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,5 +35,9 @@ class Proprietario extends Model
 
     public function chatSindica(){
         return $this->hasOne(ChatSindica::class);
+    }
+
+    public function chatPortaria(){
+        return $this->hasOne(ChatPortaria::class);
     }
 }

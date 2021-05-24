@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Models\Chat\ChatSindica;
-use App\Models\Chat\ChatSindicaMensagens;
+use App\Models\Chat\ChatPortaria;
+use App\Models\Chat\ChatPortariaMensagens;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class ChatSindicaMensagensRepository
+class ChatPortariaMensagensRepository
 {
 
     /**
@@ -30,13 +30,13 @@ class ChatSindicaMensagensRepository
                         throw new \Exception("You don't have permission to access this resource", 403);
                     }
 
-                    $chat = ChatSindica::where('proprietario_id', $request->proprietario)->first();
+                    $chat = ChatPortaria::where('proprietario_id', $request->proprietario)->first();
                 } else {
-                    $chat = ChatSindica::where('proprietario_id', $user->proprietario->id)->first();
+                    $chat = ChatPortaria::where('proprietario_id', $user->proprietario->id)->first();
                 }
 
                 if (empty($chat)) {
-                    $chat = ChatSindica::create([
+                    $chat = ChatPortaria::create([
                         'proprietario_id' => isset($request->proprietario) ? $request->proprietario : $user->proprietario->id
                     ]);
                 }
@@ -49,9 +49,9 @@ class ChatSindicaMensagensRepository
 
                             $filePath = $file->store('userFiles/messages');
 
-                            $anexo = ChatSindicaMensagens::create([
+                            $anexo = ChatPortariaMensagens::create([
                                 'autor_mensagem' => $user->id,
-                                'chat_sindica_id' => $chat->id,
+                                'chat_portaria_id' => $chat->id,
                                 'mensagem' => " ",
                                 'mensagem_admin' => $user->typeName->is_admin,
                                 'anexo' => $filePath,
@@ -69,9 +69,9 @@ class ChatSindicaMensagensRepository
                         throw $th;
                     }
                 } else {
-                    ChatSindicaMensagens::create([
+                    ChatPortariaMensagens::create([
                         'autor_mensagem' => $user->id,
-                        'chat_sindica_id' => $chat->id,
+                        'chat_portaria_id' => $chat->id,
                         'mensagem' => $request->mensagem,
                         'mensagem_admin' => $user->typeName->is_admin,
                     ]);
@@ -91,7 +91,7 @@ class ChatSindicaMensagensRepository
     {
         try {
             $user = auth()->user();
-            $message = ChatSindicaMensagens::find($messageId)->firstOrFail();
+            $message = ChatPortariaMensagens::find($messageId)->firstOrFail();
 
             if ($message->autor_mensagem != $user->id) {
                 throw new \Exception("You don't have permission to access this resource", 403);

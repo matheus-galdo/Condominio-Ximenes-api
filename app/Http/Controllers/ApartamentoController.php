@@ -7,6 +7,7 @@ use App\Http\Requests\Apartamentos\UpdateApartamentoRequest;
 use App\Http\Resources\Apartamentos\ApartamentoProprietarioResource;
 use App\Models\Apartamento;
 use App\Repositories\ApartamentoRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Illuminate\Http\Request;
 
 class ApartamentoController extends Controller
@@ -18,17 +19,29 @@ class ApartamentoController extends Controller
      */
     public function index(Request $request)
     {
-        $apartamentosBuilder = Apartamento::withTrashed();
-        if(isset($request->proprietarios) && $request->proprietarios) $apartamentosBuilder->with(['proprietarios.user']);
+        $apartamento = new Apartamento;
+        $apartamentosBuilder = $apartamento->newQuery();
         
         if (auth()->user()->typeName->is_admin) {
-            return response($apartamentosBuilder->orderBy('deleted_at')->orderBy('numero')->get());
+            $apartamentosBuilder = $apartamentosBuilder->withTrashed();
         }
 
-        return response(Apartamento::has('proprietarios')->whereHas('proprietarios', function ($builder)
-        {
-            $builder->where('proprietario_id', auth()->user()->proprietario->id);
-        })->orderBy('numero')->get());
+        if (!auth()->user()->typeName->is_admin) {
+            $apartamentosBuilder = $apartamentosBuilder->has('proprietarios')->whereHas('proprietarios', function ($builder)
+            {
+                $builder->where('proprietario_id', auth()->user()->proprietario->id);
+            });
+        }
+
+        if(isset($request->proprietarios) && $request->proprietarios) $apartamentosBuilder->with(['proprietarios.user']);
+
+        $filter = new SearchAndFilter(new Apartamento);
+        
+        if ($request->page) {
+            $apartamentosBuilder = $filter->getBuilderWithFilter($request->filter);
+            return response($apartamentosBuilder->paginate(15));
+        }
+        return response($apartamentosBuilder->get());
     }
 
     /**

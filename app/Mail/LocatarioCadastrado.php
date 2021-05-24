@@ -25,7 +25,7 @@ class LocatarioCadastrado extends Mailable
     
     
     public $titulo = 'Seja bem vindo';
-    public $assunto = 'Testando o envio de anexos';
+    public $assunto = 'Autorização de entrada';
     public $img = '';
     public $today = '';
     public $unsubscribeUrl = '';

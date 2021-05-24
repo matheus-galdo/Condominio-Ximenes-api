@@ -7,6 +7,7 @@ use App\Models\Locatario;
 use App\Models\LocatarioConvidado;
 use App\Models\LocatarioVeiculo;
 use App\Repositories\LocatarioRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,38 @@ class LocatarioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Locatario::with(['apartamento'])->get();
+        $builder = (new Locatario)->newQuery()->with(['apartamento']);
+
+
+        if (auth()->user()->typeName->is_admin) {
+            // $builder = $builder->withTrashed();
+            // $builder = $builder->withTrashed();
+        }
+
+        if (!empty($request->search)) {
+            $builder = $builder->where('nome', 'LIKE', "%{$request->search}%")
+            ->orWhere('apartamentos.numero','LIKE', "%{$request->search}%");
+        }
+
+        $filter = new SearchAndFilter(new Locatario);
+        // $filter->setCustomRule('numero_ap', ['apartamentos.numero', 'DESC'], 'orderBy');
+        if (!empty($request->filter)) {
+            $builder = $filter->getBuilderWithFilter($request->filter, $builder);
+
+            if ($request->filter) {
+                $builder = $builder->whereHas('apartamento', function($builder) use($request){
+                    return $builder->orderBy('apartamentos.numero', 'DESC');
+                });
+            }
+        }
+
+        if ($request->page) {
+            return response($builder->paginate(15));
+        }
+
+        return $builder->get();
     }
 
     /**

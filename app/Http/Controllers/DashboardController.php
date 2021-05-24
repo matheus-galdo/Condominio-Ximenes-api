@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aviso;
 use App\Repositories\AvisoRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,12 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        return Aviso::where('data_expiracao', '>=', Carbon::now())->orWhereNull('data_expiracao')->get();
+
+        $avisosBuilder = (new Aviso)->newQuery();
+        $avisosBuilder = $avisosBuilder->where('data_expiracao', '>=', Carbon::now())->orWhereNull('data_expiracao');
+
+        if ($request->page) return response($avisosBuilder->paginate(15));
+        return $avisosBuilder->get();
+
     }
 }

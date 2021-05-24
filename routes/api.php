@@ -7,6 +7,8 @@ use App\Http\Controllers\BoletosController;
 use App\Http\Controllers\Chat\ChatSindicaController;
 use App\Http\Controllers\Chat\ContatosChatController;
 use App\Http\Controllers\Chat\MensagensChatController;
+use App\Http\Controllers\ChatPortaria\ChatPortariaController;
+use App\Http\Controllers\ChatPortaria\MensagensChatController as ChatPortariaMensagensChatController;
 use App\Http\Controllers\Contas\ContasController;
 use App\Http\Controllers\ContatosController;
 use App\Http\Controllers\DashboardController;
@@ -25,11 +27,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserTypeListingController;
 use App\Http\Controllers\UserTypeController;
 use App\Mail\LocatarioCadastrado;
-use App\Services\Mailer\Mailer;
+use App\Models\Locatario;
+use App\Models\LocatarioConvidado;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\View\View;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,10 +45,15 @@ Route::get('/', function () {
 });
 
 Route::get('teste-mail', function () {
-    $mail = new LocatarioCadastrado();
-    return $mail;
+
+    Mail::send(new LocatarioCadastrado(Locatario::get()->first()));
+
+    // return response(dump(SearchAndFilter::teste(new LocatarioConvidado())));
+
+    // $mail = new LocatarioCadastrado();
+    // return $mail;
     // Mailer::send($mail);
-    Mail::send(new LocatarioCadastrado());
+    // Mail::send(new LocatarioCadastrado());
 });
 
 /*
@@ -112,6 +120,14 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function () {
     Route::get('chat-sindica/{id}', [ChatSindicaController::class, 'show']);
     Route::get('contatos-chat-sindica', [ContatosChatController::class, 'chatSindica']);
     Route::post('chat-sindica-mensagens', [MensagensChatController::class, 'createMessage']);
+
+
+    Route::get('chat-portaria', [ChatPortariaController::class, 'index']);
+    Route::get('chat-portaria/{id}', [ChatPortariaController::class, 'show']);
+    Route::get('contatos-chat-portaria', [ContatosChatController::class, 'chatPortaria']);
+    Route::post('chat-portaria-mensagens', [ChatPortariaMensagensChatController::class, 'createMessage']);
+
+
 
 
     //informações básicas

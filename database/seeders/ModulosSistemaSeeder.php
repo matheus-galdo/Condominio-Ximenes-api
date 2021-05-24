@@ -25,9 +25,10 @@ class ModulosSistemaSeeder extends Seeder
 
 
             ['nome' => 'contatos-chat-sindica',   'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
+            ['nome' => 'contatos-chat-portaria',   'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
 
             ['nome' => 'chat-sindica-mensagens',  'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
-            ['nome' => 'chat-portaria-contatos',  'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
+            ['nome' => 'chat-portaria-mensagens',  'label' => 'Listagem de contatos',  'descricao' => '', 'interno' => true],
 
 
 
