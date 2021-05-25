@@ -8,6 +8,7 @@ use App\Http\Requests\Documentos\UpdateDocumentoRequest;
 use App\Http\Resources\DocumentoResource;
 use App\Models\Documento;
 use App\Repositories\DocumentoRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -19,18 +20,33 @@ class DocumentosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $builder = (new Documento)->newQuery();
+
         if (auth()->user()->typeName->is_admin) {
-            return response(DocumentoResource::collection(Documento::withTrashed()->get()));
+            $builder = $builder->withTrashed();
         }
 
-        $documentosBuilder = Documento::where('is_public', true)->where(function($builder){
-            $builder->where('documentos.data_expiracao', null);
-            $builder->orWhere('documentos.data_expiracao', '>=', now());
-        });
+        if (!empty($request->search)) {
+            $builder = $builder->where('nome', 'LIKE', "%{$request->search}%");
+        }
 
-        return response(DocumentoResource::collection($documentosBuilder->get()));
+        if (!empty($request->filter)) {
+            $filter = new SearchAndFilter(new Documento);
+            $builder = $filter->getBuilderWithFilter($request->filter, $builder);
+        }
+
+
+        if (!auth()->user()->typeName->is_admin) {
+            $builder = $builder->where('is_public', true)->where(function($builder){
+                $builder->where('documentos.data_expiracao', null);
+                $builder->orWhere('documentos.data_expiracao', '>=', now());
+            });
+        }
+
+        if (isset($request->page) && $request->page) return response($builder->paginate(15));
+        return $builder->get();
     }
 
     /**

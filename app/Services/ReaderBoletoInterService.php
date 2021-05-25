@@ -23,7 +23,7 @@ class ReaderBoletoInterService{
         preg_match_all($reValor, $pdfText, $valorMatchs , PREG_SET_ORDER, 0);
 
         $vencimento = $vencimentoMatchs[0][1];
-        $valor = $valorMatchs[0][1];
+        $valor = str_replace(',', '.', $valorMatchs[0][1]);
         $codigoDeBarras = $codigoDeBarrasMatchs[0][0];
         $codigoDeBarras = str_replace('  ',' ', $codigoDeBarras);
 

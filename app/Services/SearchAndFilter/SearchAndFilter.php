@@ -14,6 +14,7 @@ class SearchAndFilter{
         'data_cadastro_recentes',
         'data_cadastro_antigas',
         'nome',
+        'extensao',
         'numero',
         'andar',
         'aprovados',
@@ -31,6 +32,7 @@ class SearchAndFilter{
             $this->nome =                       ['rule' => [$this->table.'.nome', 'ASC'],                'clause' => 'orderBy'];
             $this->numero =                     ['rule' => [$this->table.'.numero', 'ASC'],              'clause' => 'orderBy'];
             $this->andar =                      ['rule' => [$this->table.'.andar', 'ASC'],               'clause' => 'orderBy'];
+            $this->extensao =                   ['rule' => [$this->table.'.extensao', 'ASC'],            'clause' => 'orderBy'];
 
             $this->aprovados =                  ['rule' => [$this->table.'.aprovado', true],             'clause' => 'where'];
             $this->nao_aprovados =              ['rule' => [$this->table.'.aprovado', false],            'clause' => 'where'];

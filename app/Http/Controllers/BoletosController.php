@@ -10,16 +10,13 @@ use App\Models\Boleto;
 use App\Models\Proprietario;
 use App\Repositories\BoletoRepository;
 use App\Services\PdfToStringService;
+use App\Services\ReaderBoletoInterService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class BoletosController extends Controller
 {
-    //     ativar
-    // pagar
-    // despesa
-    // apartamento
 
     /**
      * Display a listing of the resource.

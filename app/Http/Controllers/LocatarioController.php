@@ -32,7 +32,9 @@ class LocatarioController extends Controller
 
         if (!empty($request->search)) {
             $builder = $builder->where('nome', 'LIKE', "%{$request->search}%")
-            ->orWhere('apartamentos.numero','LIKE', "%{$request->search}%");
+                ->orWhereHas('apartamento', function ($builder) use ($request) {
+                    return $builder->where('apartamentos.numero', 'LIKE', "%{$request->search}%");
+                });
         }
 
         $filter = new SearchAndFilter(new Locatario);
@@ -41,7 +43,7 @@ class LocatarioController extends Controller
             $builder = $filter->getBuilderWithFilter($request->filter, $builder);
 
             if ($request->filter) {
-                $builder = $builder->whereHas('apartamento', function($builder) use($request){
+                $builder = $builder->whereHas('apartamento', function ($builder) use ($request) {
                     return $builder->orderBy('apartamentos.numero', 'DESC');
                 });
             }
@@ -88,7 +90,7 @@ class LocatarioController extends Controller
     public function update(CreateLocatarioRequest $request, $id)
     {
         $updated = LocatarioRepository::updateLocatario($request, $id);
-        return response($updated, (!isset($updated['error']))? 200 : 400);
+        return response($updated, (!isset($updated['error'])) ? 200 : 400);
     }
 
     /**
@@ -100,7 +102,6 @@ class LocatarioController extends Controller
     public function destroy(Request $request, $id)
     {
         $deleted = LocatarioRepository::destroyLocatario($request, $id);
-        return response($deleted, (!isset($deleted['error']))? 200 : 400);
-        
+        return response($deleted, (!isset($deleted['error'])) ? 200 : 400);
     }
 }
