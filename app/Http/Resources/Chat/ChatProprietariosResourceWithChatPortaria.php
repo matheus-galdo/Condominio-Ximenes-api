@@ -6,7 +6,7 @@ use App\Http\Resources\Proprietarios\ApartamentosProprietarioResource;
 use App\Http\Resources\Proprietarios\UserProprietarioResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChatProprietariosResourceWithChat extends JsonResource
+class ChatProprietariosResourceWithChatPortaria extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,7 +23,7 @@ class ChatProprietariosResourceWithChat extends JsonResource
             'name' => $this->user->name,
             'email' => $this->user->email,
             'telefone' => $this->telefone,
-            'chat' => $this->chatSindica,
+            'chat' => $this->chatPortaria,
             
 
             'apartamentos' => ApartamentosProprietarioResource::collection($this->apartamentos)   

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Http\Resources\Chat\ChatMensagensResource;
 use App\Models\Chat\ChatSindica;
 use App\Models\Chat\ChatSindicaMensagens;
 use App\Models\User;

@@ -14,6 +14,7 @@ class SearchAndFilter{
         'data_cadastro_recentes',
         'data_cadastro_antigas',
         'nome',
+        'name',
         'extensao',
         'numero',
         'andar',
@@ -30,6 +31,7 @@ class SearchAndFilter{
             $this->data_cadastro_recentes =     ['rule' => [$this->table.'.created_at', 'DESC'],         'clause' => 'orderBy'];
             $this->data_cadastro_antigas =      ['rule' => [$this->table.'.created_at', 'ASC'],          'clause' => 'orderBy'];
             $this->nome =                       ['rule' => [$this->table.'.nome', 'ASC'],                'clause' => 'orderBy'];
+            $this->name =                       ['rule' => [$this->table.'.name', 'ASC'],                'clause' => 'orderBy'];
             $this->numero =                     ['rule' => [$this->table.'.numero', 'ASC'],              'clause' => 'orderBy'];
             $this->andar =                      ['rule' => [$this->table.'.andar', 'ASC'],               'clause' => 'orderBy'];
             $this->extensao =                   ['rule' => [$this->table.'.extensao', 'ASC'],            'clause' => 'orderBy'];
@@ -89,5 +91,6 @@ class SearchAndFilter{
     public function setCustomRule($ruleName, array $rule, $clause)
     {
         $this->$ruleName = ['rule' => $rule,     'clause' => $clause];
+        $this->availableFilters[] = $ruleName;
     }
 }

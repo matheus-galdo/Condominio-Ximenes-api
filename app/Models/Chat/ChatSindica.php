@@ -12,18 +12,23 @@ class ChatSindica extends Model
 
     public $table = 'chat_sindica';
     public $timestamps = false;
-    
+
     public $fillable = [
         "proprietario_id"
     ];
 
     public function proprietario()
     {
-        return $this->belongsTo(Proprietario::class); 
+        return $this->belongsTo(Proprietario::class);
     }
 
     public function mensagens()
     {
         return $this->hasMany(ChatSindicaMensagens::class);
+    }
+
+    public function ultimaMensagem()
+    {
+        return $this->hasOne(ChatSindicaMensagens::class)->latest();
     }
 }

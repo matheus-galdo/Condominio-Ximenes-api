@@ -5,9 +5,7 @@ namespace App\Http\Controllers\ChatPortaria;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Chat\ChatMensagensResource;
 use App\Http\Resources\Chat\ChatProprietariosResource;
-use App\Http\Resources\Chat\ChatProprietariosResourceWithChat;
-use App\Http\Resources\Chat\ChatWithProprietariosResource;
-use App\Http\Resources\Proprietarios\UserProprietarioResource;
+use App\Http\Resources\Chat\ChatProprietariosResourceWithChatPortaria;
 use App\Models\Chat\ChatPortaria;
 use App\Models\Proprietario;
 use App\Models\User;
@@ -25,8 +23,9 @@ class ChatPortariaController extends Controller
         $user = auth()->user();
 
         if ($user->typeName->is_admin) {
-            $proprietarios = ChatProprietariosResourceWithChat::collection(Proprietario::has('chatPortaria')
-                ->with(['apartamentos', 'user', 'chatPortaria'])->whereHas('user', function ($builder) {
+            $proprietarios = ChatProprietariosResourceWithChatPortaria::collection(Proprietario::has('chatPortaria')
+                ->with(['apartamentos', 'user', 'chatPortaria.ultimaMensagem'])
+                ->whereHas('user', function ($builder) {
                     $builder->where('users.deleted_at', null);
                 })->get());
 
@@ -41,12 +40,12 @@ class ChatPortariaController extends Controller
         }
 
         $user = User::with('proprietario')->find($user->id);
-        $chat = ChatPortaria::where('proprietario_id', $user->proprietario->id)->first();
+        $chat = ChatPortaria::with('ultimaMensagem')->where('proprietario_id', $user->proprietario->id)->first();
 
         $stdAdmin = new \stdClass();
         $stdAdmin->user_id = $user->id;
         $stdAdmin->id = 0;
-        $stdAdmin->name = 'Síndica';
+        $stdAdmin->name = 'Portaria';
         $stdAdmin->type = 0;
 
         if (!empty($chat)) {
@@ -95,8 +94,24 @@ class ChatPortariaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($chatId)
     {
-        //
+        $user = auth()->user();
+        $userChat = ChatPortaria::findOrFail($chatId);
+
+        if ((!$user->typeName->is_admin)) {
+            return response()->json(["status" => "You don't have permission to access this resource"], 403);
+        }
+
+        $proprietarioId = $userChat->proprietario_id;
+
+        $userChat->delete();
+
+        $proprietarioWithoutChat = ChatProprietariosResource::collection(Proprietario::with(['apartamentos', 'user'])
+        ->whereHas('user', function ($builder) {
+            $builder->where('users.deleted_at', null);
+        })->where('id', $proprietarioId)->get());
+
+        return response()->json($proprietarioWithoutChat);
     }
 }

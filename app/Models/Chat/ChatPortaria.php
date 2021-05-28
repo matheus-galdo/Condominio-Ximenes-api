@@ -26,4 +26,9 @@ class ChatPortaria extends Model
     {
         return $this->hasMany(ChatPortariaMensagens::class);
     }
+
+    public function ultimaMensagem()
+    {
+        return $this->hasOne(ChatPortariaMensagens::class)->latest();
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Permissoes\UpdateUserTypeRequest;
 use App\Http\Resources\UserTypeResource;
 use App\Models\Sistema\UserType;
 use App\Repositories\UserTypeRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Illuminate\Http\Request;
 
 class UserTypeController extends Controller
@@ -18,8 +19,22 @@ class UserTypeController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->page) return response(UserType::withTrashed()->orderBy('nome')->paginate(15));
-        return response(UserType::withTrashed()->orderBy('nome')->get());
+        $filter = (isset($request->filter)) ? $request->filter : 'nome';
+
+        $builder = UserType::withTrashed();
+
+        if (!empty($request->search)) {
+            $builder = $builder->where('nome', 'LIKE', "%{$request->search}%");
+        }
+
+        if (!empty($request->filter)) {
+            $filter = new SearchAndFilter(new UserType);
+            $filter->setCustomRule('is_admin', ['user_types.is_admin', 'DESC'], 'orderBy');
+            $builder = $filter->getBuilderWithFilter($request->filter, $builder);
+        }
+
+        if ($request->page) return response($builder->paginate(15));
+        return response($builder->get());
     }
 
     /**

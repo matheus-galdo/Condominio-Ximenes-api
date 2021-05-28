@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
 
             'name' => 'required_without:ativar|string',
             'email' => 'required_without:ativar|email:rfc',
-            'password' => 'nullable|confirmed',
+            'password' => 'nullable|min:8|confirmed',
             'userType' => 'required_without:ativar|exists:App\Models\Sistema\UserType,id',
         ];
     }

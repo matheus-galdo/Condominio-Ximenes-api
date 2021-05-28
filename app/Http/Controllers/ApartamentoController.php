@@ -33,6 +33,10 @@ class ApartamentoController extends Controller
             });
         }
 
+        if (!empty($request->search)) {
+            $apartamentosBuilder = $apartamentosBuilder->where('numero', 'LIKE', "%{$request->search}%");
+        }
+
         if(isset($request->proprietarios) && $request->proprietarios) $apartamentosBuilder->with(['proprietarios.user']);
 
         $filter = new SearchAndFilter(new Apartamento);

@@ -14,7 +14,6 @@ class UserType extends Model
 
     public $table = 'user_types';
 
-    public $timestamps = false;
     public $fillable = ['nome', 'deleted_at', 'is_admin', 'default_admin', 'default_user'];
     public $casts = ['is_admin' => 'boolean', 'default_admin' => 'boolean', 'default_user' => 'boolean'];
     protected $dates = ['deleted_at'];

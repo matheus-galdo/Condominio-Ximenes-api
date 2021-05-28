@@ -26,7 +26,7 @@ class CreateUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'email' => 'required|email:rfc|unique:App\Models\User,email',
-            'password' => 'required|confirmed',
+            'password' => 'required|min:8|confirmed',
             'userType' => 'required|exists:App\Models\Sistema\UserType,id',
         ];
     }

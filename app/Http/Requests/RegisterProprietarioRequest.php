@@ -26,7 +26,7 @@ class RegisterProprietarioRequest extends FormRequest
         return [
             'name' => 'required|string',
             'email' => 'required|email:rfc|unique:App\Models\User,email',
-            'password' => 'required|confirmed',
+            'password' => 'required|min:8|confirmed',
             'apartamento' => 'required|string',
             'celular' => 'required|string|min:8'            
         ];

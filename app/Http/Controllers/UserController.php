@@ -8,7 +8,9 @@ use App\Http\Resources\PublicUserResource;
 use App\Models\Sistema\UserType;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Services\SearchAndFilter\SearchAndFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -19,11 +21,27 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $builder = User::with('typeName')->whereHas('typeName', function ($builder){
-            $builder->where('is_admin', true);
-        })->withTrashed()->orderBy('deleted_at')->orderBy('name');
+        $filter = (isset($request->filter)) ? $request->filter : 'nome';
 
-        if($request->page) return response($builder->paginate(15));
+        $builder = User::with('typeName')->whereHas(
+            'typeName', function ($builder) {
+                $builder->where('user_types.is_admin', true);
+            },
+        )->withTrashed();
+
+
+        if (!empty($request->search)) {
+            $builder = $builder->where('name', 'LIKE', "%{$request->search}%")
+                ->orWhere('email', 'LIKE', "%{$request->search}%");
+        }
+
+        if (!empty($request->filter)) {
+            $filter = new SearchAndFilter(new User);
+            $filter->setCustomRule('user_type', ['users.type', 'DESC'], 'orderBy');
+            $builder = $filter->getBuilderWithFilter($request->filter, $builder);
+        }
+
+        if ($request->page) return response($builder->paginate(15));
         return response($builder->get());
     }
 

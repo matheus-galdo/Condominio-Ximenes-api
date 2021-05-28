@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Chat\ChatMensagensResource;
 use App\Http\Resources\Chat\ChatProprietariosResource;
 use App\Http\Resources\Chat\ChatProprietariosResourceWithChat;
-use App\Http\Resources\Chat\ChatWithProprietariosResource;
-use App\Http\Resources\Proprietarios\UserProprietarioResource;
 use App\Models\Chat\ChatSindica;
 use App\Models\Proprietario;
 use App\Models\User;
@@ -26,7 +24,8 @@ class ChatSindicaController extends Controller
 
         if ($user->typeName->is_admin) {
             $proprietarios = ChatProprietariosResourceWithChat::collection(Proprietario::has('chatSindica')
-                ->with(['apartamentos', 'user', 'chatSindica'])->whereHas('user', function ($builder) {
+                ->with(['apartamentos', 'user', 'chatSindica.ultimaMensagem'])
+                ->whereHas('user', function ($builder) {
                     $builder->where('users.deleted_at', null);
                 })->get());
 
@@ -41,7 +40,7 @@ class ChatSindicaController extends Controller
         }
 
         $user = User::with('proprietario')->find($user->id);
-        $chat = ChatSindica::where('proprietario_id', $user->proprietario->id)->first();
+        $chat = ChatSindica::with('ultimaMensagem')->where('proprietario_id', $user->proprietario->id)->first();
 
         $stdAdmin = new \stdClass();
         $stdAdmin->user_id = $user->id;
@@ -89,14 +88,31 @@ class ChatSindicaController extends Controller
         return response()->json(ChatMensagensResource::collection($userChat->mensagens));
     }
 
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($chatId)
     {
-        //
+        $user = auth()->user();
+        $userChat = ChatSindica::findOrFail($chatId);
+
+        if ((!$user->typeName->is_admin)) {
+            return response()->json(["status" => "You don't have permission to access this resource"], 403);
+        }
+
+        $proprietarioId = $userChat->proprietario_id;
+
+        $userChat->delete();
+
+        $proprietarioWithoutChat = ChatProprietariosResource::collection(Proprietario::with(['apartamentos', 'user'])
+        ->whereHas('user', function ($builder) {
+            $builder->where('users.deleted_at', null);
+        })->where('id', $proprietarioId)->get());
+
+        return response()->json($proprietarioWithoutChat);
     }
 }

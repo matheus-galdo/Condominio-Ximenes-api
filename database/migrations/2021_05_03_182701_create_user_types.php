@@ -20,6 +20,7 @@ class CreateUserTypes extends Migration
             $table->boolean('default_admin')->default(false);
             $table->boolean('default_user')->default(false);
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

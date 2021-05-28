@@ -21,32 +21,7 @@ class ProprietariosController extends Controller
      */
     public function index(Request $request)
     {
-
-        // return response(dump(new User));
-        // $builder = User::with([
-        //     'typeName' => function ($builder) {
-        //         $builder->where('is_admin', false);
-        //     },
-        // ])
-        //     ->join('proprietarios', 'users.id', '=', 'proprietarios.user_id')
-        //     ->addSelect('*', 'proprietarios.id as proprietario_id', 'users.id as id')
-        //     ->withTrashed();
-
-        // $filter = new SearchAndFilter(new User);
-        // $builder = $filter->getBuilderWithFilter($request->filter, $builder);
-
         $filter = (isset($request->filter)) ? $request->filter : 'nome';
-
-        $filterOptions = [
-            'nao_aprovados' =>              ['rule' => ['proprietarios.aprovado', false],    'clause' => 'where'],
-            'aprovados' =>                  ['rule' => ['proprietarios.aprovado', true],     'clause' => 'where'],
-            'data_cadastro_recentes' =>     ['rule' => ['users.created_at', 'DESC'],         'clause' => 'orderBy'],
-            'data_cadastro_antigas' =>      ['rule' => ['users.created_at', 'ASC'],          'clause' => 'orderBy'],
-            'nome' =>                       ['rule' => ['users.name', 'ASC'],                'clause' => 'orderBy'],
-            'desativado' =>                 ['rule' => ['users.deleted_at', '!=', null],     'clause' => 'where'],
-            'ativado' =>                    ['rule' => ['users.deleted_at', '==', null],     'clause' => 'where'],
-        ];
-
 
         $builder = User::with([
             'typeName' => function ($builder) {
@@ -57,15 +32,20 @@ class ProprietariosController extends Controller
             ->addSelect('*', 'proprietarios.id as proprietario_id', 'users.id as id')
             ->withTrashed();
 
-        if (isset($request->filter) && $request->filter != 'todos') {
-            if ($filterOptions[$filter]['clause'] == 'where') {
-                $builder = $builder->where(...$filterOptions[$filter]['rule']);
-            } else if ($filterOptions[$filter]['clause'] == 'orderBy') {
-                $builder = $builder->orderBy(...$filterOptions[$filter]['rule']);
-            }
+
+        if (!empty($request->search)) {
+            $builder = $builder->where('name', 'LIKE', "%{$request->search}%")
+                ->orWhere('email', 'LIKE', "%{$request->search}%");
         }
 
-        if ($request->page) return response($builder->paginate(5, $request->page));
+        if (!empty($request->filter)) {
+            $filter = new SearchAndFilter(new User);
+            $filter->setCustomRule('aprovados', ['proprietarios.aprovado', true], 'where');
+            $filter->setCustomRule('nao_aprovados', ['proprietarios.aprovado', false], 'where');
+            $builder = $filter->getBuilderWithFilter($request->filter, $builder);
+        }
+
+        if ($request->page) return response($builder->paginate(15));
         return response($builder->get());
     }
 

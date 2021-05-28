@@ -118,14 +118,16 @@ Route::group(['middleware' => ['apiJwt', 'permission']], function () {
     //Chat
     Route::get('chat-sindica', [ChatSindicaController::class, 'index']);
     Route::get('chat-sindica/{id}', [ChatSindicaController::class, 'show']);
-    Route::get('contatos-chat-sindica', [ContatosChatController::class, 'chatSindica']);
+    Route::delete('chat-sindica/{id}', [ChatSindicaController::class, 'destroy']);
     Route::post('chat-sindica-mensagens', [MensagensChatController::class, 'createMessage']);
+    Route::get('chat-sindica-novas-mensagens/{lastMensagemId}', [MensagensChatController::class, 'lookForNewMessages']);
 
 
     Route::get('chat-portaria', [ChatPortariaController::class, 'index']);
     Route::get('chat-portaria/{id}', [ChatPortariaController::class, 'show']);
-    Route::get('contatos-chat-portaria', [ContatosChatController::class, 'chatPortaria']);
+    Route::delete('chat-portaria/{id}', [ChatPortariaController::class, 'destroy']);
     Route::post('chat-portaria-mensagens', [ChatPortariaMensagensChatController::class, 'createMessage']);
+    Route::get('chat-portaria-novas-mensagens/{lastMensagemId}', [ChatPortariaMensagensChatController::class, 'createMessage']);
 
 
 
